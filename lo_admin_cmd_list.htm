@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Last Oasis Admin Command Tool</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+            :root {
+                --bg-color: #1a1a1a;
+                --container-bg: #2d2d2d;
+                --text-color: #e0e0e0;
+                --accent-color: #2c70bd;
+                --hover-accent-color: #0000002e;
+                --accent-text-color: #ffffff;
+                --border-color: #ff9122;
+                --input-bg: #333;
+                --highlight-color: #0000007a;
+                --success-color: #4caf50;
+                --category-header-bg: #3a3a3a;
+            }
+
+            body.light-theme {
+                --bg-color: #f0f0f0;
+                --container-bg: #ffffff;
+                --text-color: #333333;
+                --accent-color: #2c70bd;
+                --accent-text-color: #ffffff;
+                --border-color: #ff833b;
+                --input-bg: #f9f9f9;
+                --highlight-color: rgba(172, 80, 0, 0.32);
+                --success-color: #4caf50;
+                --category-header-bg: #e0e0e0;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                letter-spacing: 1px;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 20px;
+                transition: background-color 0.3s, color 0.3s;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .gfont {
+                font-family: "Orbitron", sans-serif;
+            }
+
+            .container {
+                max-width: 1200px;
+                width: 100%;
+                margin: 0 auto;
+                background-color: var(--container-bg);
+                padding: 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                flex: 1;
+            }
+
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 10px;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                /* Space between logo and title */
+            }
+
+            .header-logo {
+                width: 100px;
+                height: 79px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                flex-shrink: 0;
+                /* Prevent logo from shrinking */
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 1.5rem;
+            }
+
+            .theme-switch {
+                cursor: pointer;
+                padding: 8px 15px;
+                background: var(--input-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                color: var(--text-color);
+            }
+
+            input[type="number"],
+            input[type="text"],
+            select {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                background-color: var(--input-bg);
+                border: 1px solid var(--border-color);
+                color: var(--text-color);
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                font-size: 0.9rem;
+                margin-top: 10px;
+            }
+
+            .category-select {
+                margin-bottom: 20px;
+            }
+
+            .item-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 8px;
+                margin-bottom: 15px;
+                max-height: 400px;
+                overflow-y: auto;
+                padding: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+
+            .item-grid.lootsite-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                word-wrap: break-word;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .item-grid.lootsite-grid .grid-item {
+                display: block !important;
+                word-wrap: break-word !important;
+                word-break: break-all !important;
+                overflow-wrap: break-word !important;
+                white-space: normal !important;
+                text-align: center !important;
+
+                /* Vertical centering fix */
+                min-height: 40px !important;
+                line-height: 1.4 !important;
+                padding: 20px 10px !important;
+
+                /* This helps center content vertically in block elements */
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+
+            .category-group {
+                margin-bottom: 20px;
+            }
+
+            .category-header {
+                background-color: var(--category-header-bg);
+                padding: 8px 12px;
+                font-weight: bold;
+                font-size: 1rem;
+                border-radius: 4px;
+                margin-bottom: 8px;
+                border-left: 3px solid var(--accent-color);
+            }
+
+            .category-items {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 8px;
+                padding-left: 10px;
+            }
+
+            .grid-item {
+                background: var(--input-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                padding: 10px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-size: 0.9rem;
+                min-height: 40px;
+                display: flex;
+                align-items: center;
+                /* Vertical center */
+                justify-content: center;
+                /* Horizontal center */
+            }
+
+            .grid-item:hover {
+                border-color: var(--accent-color);
+                background: var(--hover-accent-color);
+                transform: translateY(-2px);
+            }
+
+            .grid-item.selected {
+                background-color: var(--highlight-color);
+                border-color: var(--accent-color);
+                box-shadow: 0 0 5px var(--accent-color);
+            }
+
+            .q-0 {
+                color: #ffffff;
+            }
+            .q-1 {
+                color: #57f85d;
+            }
+            .q-2 {
+                color: #2b63fc;
+            }
+            .q-3 {
+                color: #FF00FF;
+            }
+            .q-4 {
+                color: #d4af37;
+            }
+
+            body.light-theme .q-0 {
+                color: #0f0f0f;
+            }
+            body.light-theme .q-1 {
+                color: #16991d;
+            }
+            body.light-theme .q-2 {
+                color: #2b63fc;
+            }
+            body.light-theme .q-3 {
+                color: #FF00FF;
+            }
+            body.light-theme .q-4 {
+                color: #d4af37;
+            }
+
+            .note-title {
+                color: #fa791d;
+                font-weight: 900;
+            }
+
+            .btn-action {
+                background-color: var(--accent-color);
+                color: var(--accent-text-color);
+                border: none;
+                padding: 12px 20px;
+                font-size: 1rem;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                border-radius: 4px;
+                margin-top: 10px;
+            }
+
+            .btn-action:hover {
+                opacity: 0.9;
+            }
+
+            .output-area {
+                margin-top: 25px;
+                padding-top: 20px;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .output-box {
+                display: flex;
+                gap: 10px;
+            }
+
+            #finalCommand {
+                font-family: monospace;
+                background: #000;
+                color: #0f0;
+            }
+
+            .copy-btn {
+                background: var(--container-bg);
+                border: 1px solid var(--accent-color);
+                color: var(--accent-color);
+                cursor: pointer;
+                padding: 0 20px;
+                border-radius: 4px;
+                white-space: nowrap;
+            }
+
+            .copy-btn:active {
+                background: var(--accent-color);
+                color: #000;
+            }
+
+            .hidden {
+                display: none;
+            }
+            .row-inputs {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            .row-inputs > div {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .grid-item.unstable {
+                background-color: rgba(255, 193, 7, 0.15);
+                /* Yellow tint */
+                border-color: #ffc107;
+            }
+
+            /* Light theme override */
+            body.light-theme .grid-item.unstable {
+                background-color: rgba(255, 193, 7, 0.25);
+            }
+
+            /* Info Drawer Styles */
+            .info-drawer {
+                background-color: var(--container-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                margin-bottom: 20px;
+                overflow: hidden;
+            }
+
+            .info-drawer-header {
+                padding: 12px 15px;
+                background-color: var(--category-header-bg);
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: bold;
+                user-select: none;
+            }
+
+            .info-drawer-header:hover {
+                background-color: var(--input-bg);
+            }
+
+            .drawer-arrow {
+                transition: transform 0.3s ease;
+            }
+
+            .info-drawer.open .drawer-arrow {
+                transform: rotate(180deg);
+            }
+
+            .info-drawer-content {
+                max-height: 0;
+                transition: max-height 0.3s ease-out;
+                padding: 0 15px;
+                background-color: var(--bg-color);
+            }
+
+            .info-drawer.open .info-drawer-content {
+                max-height: 500px;
+                padding: 15px;
+                transition: max-height 0.5s ease-in;
+                overflow-y: auto;
+                overflow-x: hidden;
+                white-space: normal;
+                overflow-wrap: break-word;
+            }
+
+            .info-drawer-content p {
+                margin: 10px 0;
+                font-size: 0.9rem;
+            }
+
+            .info-drawer-content ol,
+            .info-drawer-content ul {
+                margin: 10px 0;
+                padding-left: 20px;
+            }
+
+            .info-drawer-content li {
+                margin: 0 5px 10px 20px;
+                font-size: 16px;
+            }
+
+            .info-drawer-content li:last-child {
+                margin: 0 5px 0 20px;
+            }
+
+            .unstable-badge {
+                color: #ffc107;
+                font-weight: 900;
+            }
+
+            .custom-select-wrapper {
+                position: relative;
+                user-select: none;
+                width: 100%;
+            }
+
+            .custom-select {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .custom-select-selected {
+                padding: 10px;
+                background-color: var(--input-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                color: var(--text-color);
+                cursor: pointer;
+            }
+
+            .custom-select-selected::after {
+                content: "▼";
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                color: var(--border-color);
+            }
+
+            .custom-select-options {
+                position: absolute;
+                display: block;
+                top: 100%;
+                left: 0;
+                right: 0;
+                border: 1px solid var(--border-color);
+                border-top: 0;
+                background-color: var(--container-bg);
+                transition: all 0.3s;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                z-index: 2;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .custom-select.open .custom-select-options {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: all;
+            }
+
+            .custom-option {
+                padding: 5px 20px;
+                color: var(--text-color);
+                cursor: pointer;
+            }
+
+            .custom-option:hover {
+                background-color: var(--highlight-color);
+                color: var(--text-color);
+            }
+
+            .custom-option.selected {
+                background-color: var(--accent-color);
+                color: var(--accent-text-color);
+            }
+            /* Custom Dropdown Hover - Force it with higher specificity */
+            .custom-select-wrapper .custom-option:hover {
+                background-color: var(--highlight-color) !important;
+                color: var(--text-color) !important;
+            }
+
+            .custom-select-wrapper .custom-option.selected {
+                background-color: var(--accent-color) !important;
+                color: var(--accent-text-color) !important;
+            }
+
+            /* Ensure cursor shows it's clickable */
+            .custom-select-wrapper .custom-option {
+                cursor: pointer !important;
+            }
+
+            .footer {
+                max-width: 1200px;
+                width: 100%;
+                margin: 20px auto 0;
+                padding-top: 20px;
+                border-top: 1px solid var(--border-color);
+                text-align: center;
+                font-size: 0.9rem;
+                color: var(--text-color);
+                opacity: 0.8;
+            }
+
+            .footer p {
+                margin: 5px 0;
+            }
+
+            .no-copy-box {
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                padding: 10px;
+                margin: 10px;
+                width: 400px;
+                color: #EEEEEE;
+                background-color: #1e1e1e;
+                border: 1px solid #ff8800;
+                font-family: monospace;
+                white-space: pre;
+              }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <header>
+                <div class="header-left gfont">
+                    <div class="header-logo"></div>
+                    <h1 style="letter-spacing: 2px; font-size:36px;">LO Admin Command Tool</h1>
+                </div>
+                <button class="theme-switch gfont" id="themeToggle">Switch Theme</button>
+            </header>
+
+            <div class="info-drawer" id="infoDrawer">
+                <div class="info-drawer-header gfont" id="infoDrawerToggle">
+                    <span>ℹ️ Notes / Instructions</span>
+                    <span class="drawer-arrow">▼</span>
+                </div>
+                <div class="info-drawer-content">
+                    <p>
+                        <strong class="gfont">How to Use:</strong>
+                    </p>
+                    <ol>
+                        <li>Select an admin command from the dropdown</li>
+                        <li>Fill in the required options that appear</li>
+                        <li>For items/mobs/walkers - click to select from the grid</li>
+                        <li>Click "Get Command" to generate your command</li>
+                        <li>Click "Copy" to copy to clipboard</li>
+                    </ol>
+                    <br>
+                    <hr>
+                    <p>
+                        <strong class="gfont">Important Note:</strong>
+                    </p>
+                    <ul>
+                        <li>
+                            <span class="note-title">📢 Note:</span>
+                            Items marked with (
+                            <span class="unstable-badge">*</span>
+                            ) may not work correctly, if at all.</li>
+                        <li>
+                            <span class="note-title">📋 Command List:</span>
+                            All Admin commands and items are what is in the game at the time of writing this.<br>
+                            Some may be added or removed in the future.</li>
+                        <li>
+                            <span class="note-title">👁️ Distance:</span>
+                            When doing distance, the value of about 25000 is about a quarter, (1/4th), of a grid.</li>
+                        <li>
+                            <span class="note-title">⚠️ Important:</span>
+                            The command
+                            <em>/SpawnLootsite [LootSite] [Distance] [Quality]</em>, as of today, Mar 4th, 2026, the "Quality" does not change, no<br>
+                            matter the value as far as I can see.</li>
+                    </ul>
+                    <br>
+                    <hr>
+                    <p>
+                        <strong class="gfont">How to Edit Equipment Sets:</strong><br>
+                        <small class="note-title">⚠️ Important: Basic coding knowledgebase needed, along with a code editor like VSCode, Notepad++, or SublimeText.</small>
+                    </p>
+                    <ol>
+                        <li>Set up the Admin Commands or the Equipment Sets by following the instructions here: <a href="https://pingperfect.com/knowledgebase/927/Last-Oasis--Compound-cheat-commands-and-item-sets.html" target="_blank">CLICK HERE</a>
+                        </li>
+                        <li>Once you do that, while editing this file using a Code editor, do a search for "<em>EditSetsHere</em>".</li>
+                        <li>Once you go to that location, you will see a section that looks like:<br>
+                        <div class="no-copy-box" oncopy="return false" onselectstart="return false" oncontextmenu="return false">{ name: "Starter Set", cmd: "1" },
+{ name: "PvP Set", cmd: "2" },
+{ name: "Builder Set", cmd: "3" }</div>
+                        <br>
+                        You would edit that to have the name you want you to see it as, and the cmd:, well, put that as the number you assigned to the set you created.<br>
+                        <span class="note-title">⚠️ Important:</span> Notice how each one ends with a comma except for the last one in the grouping, keep it that way.
+                        </li>
+                        <li>To edit the adminCommandPresets, its the same thing. The name: will be the name you see in the list on this script, and the cmd: is the command name you assign it.</li>
+                        <li>Once you edited this file with the commands you set in the AdminData.json file, save it and if you go to the drop down and you see the list, then congrats, you didn't break it and you are good to go. If the list is gone, you more and likely messed up a quote or a comma.</li>
+                    </ol>
+
+                </div>
+            </div>
+
+            <label for="customCommandSelect">Select Admin Command:
+                <br>
+                <small style="font-size: 10px; letter-space:1px;">⚠️Warning: Important info in the Notes / Instructions.⚠️</small>
+            </label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select" id="customCommandSelect">
+                    <div class="custom-select-selected">-- Choose a Command --</div>
+                    <div class="custom-select-options">
+                        <div class="custom-option" data-value="/GiveItem">/GiveItem [ItemName] [Amount]</div>
+                        <div class="custom-option" data-value="/GiveItemQuality">/GiveItemQuality [ItemName] [Quality] [Amount]</div>
+                        <div class="custom-option" data-value="/GiveItemSet">/GiveItemSet [Set Number]</div>
+                        <div class="custom-option" data-value="/EquipItemSet">/EquipItemSet [Set Number]</div>
+                        <div class="custom-option" data-value="/SpawnWalker">/SpawnWalker [WalkerName] [1/0]</div>
+                        <div class="custom-option" data-value="/SpawnWalkerQuality">/SpawnWalkerQuality [WalkerName] [Quality] [1/0]</div>
+                        <div class="custom-option" data-value="/SpawnMob">/SpawnMob [MobName]</div>
+                        <div class="custom-option" data-value="/SpawnMobInDistance">/SpawnMobInDistance [MobName] [Distance] [Quality]</div>
+                        <div class="custom-option" data-value="/SpawnMultipleMobs">/SpawnMultipleMobs [MobName] [Distance] [Amount] [Quality]</div>
+                        <div class="custom-option" data-value="/SpawnLootsite">/SpawnLootsite [LootSite] [Distance] [Quality]</div>
+                        <div class="custom-option" data-value="/SpawnWorm">/SpawnWorm [Distance]</div>
+                        <div class="custom-option" data-value="/Teleport">/Teleport [Distance]</div>
+                        <div class="custom-option" data-value="/TeleportTo">/TeleportTo [X] [Y]</div>
+                        <div class="custom-option" data-value="/TeleportTo3D">/TeleportTo3D [X] [Y] [Z]</div>
+                        <div class="custom-option" data-value="/TeleportWalkerTo">/TeleportWalkerTo [Coordinates]</div>
+                        <div class="custom-option" data-value="/TeleportPlayerToMe">/TeleportPlayerToMe [PlayerName]</div>
+                        <div class="custom-option" data-value="/TeleportEveryoneToMe">/TeleportEveryoneToMe</div>
+                        <div class="custom-option" data-value="/TeleportToPlayer">/TeleportToPlayer [PlayerName]</div>
+                        <div class="custom-option" data-value="/SetHealth">/SetHealth [Amount]</div>
+                        <div class="custom-option" data-value="/SetMaxHealth">/SetMaxHealth [Health] [MaxHealth]</div>
+                        <div class="custom-option" data-value="/SetWalkerSpeed">/SetWalkerSpeed [Speed Ammount]</div>
+                        <div class="custom-option" data-value="/GiveMoney">/GiveMoney [Amount]</div>
+                        <div class="custom-option" data-value="/GiveExp">/GiveExp [Amount] [ShareWithClan 1/0]</div>
+                        <div class="custom-option" data-value="/FreeBuilding">/FreeBuilding [1/0]</div>
+                        <div class="custom-option" data-value="/LocalFreeBuilding">/LocalFreeBuilding [1/0]</div>
+                        <div class="custom-option" data-value="/InstantConstruction">/InstantConstruction [1/0]</div>
+                        <div class="custom-option" data-value="/UnlockTechTree">/UnlockTechTree</div>
+                        <div class="custom-option" data-value="/UnlockTech">/UnlockTech [Name]</div>
+                        <div class="custom-option" data-value="/AdminOpenEverything">/AdminOpenEverything [1/0]</div>
+                        <div class="custom-option" data-value="/NoClip">/NoClip [1/0]</div>
+                        <div class="custom-option" data-value="/SpectatePlayer">/SpectatePlayer [PlayerName]</div>
+                        <div class="custom-option" data-value="/StartSpectating">/StartSpectating</div>
+                        <div class="custom-option" data-value="/StopSpectating">/StopSpectating</div>
+                        <div class="custom-option" data-value="/DestroyObject">/DestroyObject</div>
+                        <div class="custom-option" data-value="/ExecuteAdminCommand">/ExecuteAdminCommand [Command]</div>
+                        <div class="custom-option" data-value="/SpawnFightClubWeaponRack">/SpawnFightClubWeaponRack [SetNum] [UseOnce 1/0]</div>
+                        <div class="custom-option" data-value="/NextQuest">/NextQuest [Amount]</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dynamicInputs" class="hidden"></div>
+
+            <div id="actionArea" class="hidden">
+                <button class="btn-action" id="generateBtn">Get Command</button>
+            </div>
+
+            <div class="output-area hidden" id="outputArea">
+                <label>Ready to Copy:</label>
+                <div class="output-box">
+                    <input type="text" id="finalCommand" readonly="readonly">
+                    <button class="copy-btn" id="copyBtn">Copy</button>
+                </div>
+                <div id="copyMsg" style="font-size: 0.8rem; margin-top: 5px; color: var(--success-color); height: 1rem;"></div>
+            </div>
+        </div>
+        <footer class="footer">
+             <!-- Please, do not edit or remove. -->
+            <p>&copy;
+                <span id="currentYear"></span>
+                headshotdomain.net - Last Oasis Admin Command Tool. All rights reserved.</p>
+            <p style="font-size: 0.8rem; color: var(--text-color); opacity: 0.7;">
+                Created for the Last Oasis community
+            </p>
+        </footer>
+        <script>
+            // DATA STRUCTURE WITH CATEGORIES
+            const gameData = {
+                items: {
+                    masks: [
+                        { name: "Balaclava", cmd: "Balaclava" },
+                        { name: "Bandit Mask", cmd: "BanditMask" },
+                        { name: "Sunset Headdress", cmd: "BlindRainbowMask" },
+                        { name: "Bucket Helmet", cmd: "BucketHelmet" },
+                        { name: "Dance Mask", cmd: "DanceMask" },
+                        { name: "Diamond Mask", cmd: "DiamondMask" },
+                        { name: "Ornate Veil Cap", cmd: "EyeCurtains" },
+                        { name: "Mask and Eyepatch", cmd: "Eyepatch" },
+                        { name: "Feather Mask", cmd: "FeatherMask" },
+                        { name: "Tied Keffiyeh Scarf", cmd: "Keffiyeh" },
+                        { name: "Wrapped Keffiyeh Scarf", cmd: "Keffiyeh_2" },
+                        { name: "Rupu Mask", cmd: "RupuEthnicMask" },{ name: "Festive Turban", cmd: "Turban" }
+                    ],
+
+                    helmets: [
+                        { name: "Gas Mask", cmd: "GasMask" },
+                        { name: "Fiber Headwrap", cmd: "T1_FiberHeadwrap" },
+                        { name: "Winged Helmet", cmd: "WingedHelmet" },{ name: "Cloak", cmd: "T4_Cloak" }
+                    ],
+
+                    back: [
+                        { name: "Admin Wing Suit", cmd: "AdminWingSuit" },
+                        { name: "Wing Suit", cmd: "WingSuit" },
+                        { name: "Durable Water Sack", cmd: "Barrel" },
+                        { name: "Split Durable Water Sack", cmd: "SplitBarrel2" },
+                        { name: "Heavy Backpack", cmd: "LargeBackpack" },
+                        { name: "Medium Backpack", cmd: "MediumBackpack" },
+                        { name: "Light Backpack", cmd: "SmallBackpack" },
+                        { name: "Water Circulator", cmd: "Stillsuit2" },{ name: "Torque Backpack", cmd: "GrapplingBelt" }
+                    ],
+
+                    belt: [
+                        { name: "Large Gathering Puch", cmd: "LargePouch" },
+                        { name: "Bone Bottle", cmd: "BoneBottle" },
+                        { name: "Ceramic Bottle", cmd: "CeramicBottle" },
+                        { name: "Foraging Pouch", cmd: "ForagingPouch" },
+                        { name: "Makeshift Bottle", cmd: "MakeshiftBottle" },
+                        { name: "Split Bone Bottle", cmd: "SplitBoneBottle" },
+                        { name: "Split Ceramic Bottle", cmd: "SplitCeramicBottle" },
+                        { name: "Obsidian Flask", cmd: "LavaBottleSmall" },
+                        { name: "Infused Obsidian Bottle", cmd: "LavaBottleLarge" },
+                        { name: "Torque Battery", cmd: "TorqueContainer" },
+                        { name: "Compacted Torque Battery", cmd: "HeavyTorqueContainer" },
+                        { name: "Improvised Bottle", cmd: "ImprovisedBottle" },{ name: "Net Pouch", cmd: "NetPouch" }
+                    ],
+
+                    armor: [
+                        { name: "Feather Boots", cmd: "FeatherBoots" },
+                        { name: "Fiber Boots", cmd: "T1_FiberBoots" },
+                        { name: "Fiber Arm Wraps", cmd: "T1_FiberGloves" },
+                        { name: "Fiber Sandals", cmd: "T1_FiberTorso" },
+                        { name: "Rupu Fur Sandals", cmd: "T1_RupuFurBoots" },
+                        { name: "Rupu Fur Sleeves", cmd: "T1_RupuFurGloves" },
+                        { name: "Rupu Fur Armor", cmd: "T1_RupuFurTorso" },
+                        { name: "Basketwood Boots", cmd: "T2_BasketwoodBoots" },
+                        { name: "Basketwood Braces", cmd: "T2_BasketwoodGloves" },
+                        { name: "Basketwood Armor", cmd: "T2_BasketwoodTorso" },
+                        { name: "Forester Sandals", cmd: "T2_ForesterBoots" },
+                        { name: "Forester Braces", cmd: "T2_ForesterGloves" },
+                        { name: "Forester Armor", cmd: "T2_ForesterTorso" },
+                        { name: "TripleStitch Boots", cmd: "T2_TripleStitchBoots" },
+                        { name: "TripleStitch Braces", cmd: "T2_TripleStitchGloves" },
+                        { name: "TripleStitch Armor", cmd: "T2_TripleStitchTorso" },
+                        { name: "Brittle Bone Boots", cmd: "T3_BrittleBoneBoots" },
+                        { name: "Brittle Bone Handwraps", cmd: "T3_BrittleBoneGloves" },
+                        { name: "Brittle Bone Armor", cmd: "T3_BrittleBoneTorso" },
+                        { name: "Carapace Boots", cmd: "T3_CarapaceBoots" },
+                        { name: "Carapace Gauntlets", cmd: "T3_CarapaceGloves" },
+                        { name: "Carapace Armor", cmd: "T3_CarapaceTorso" },
+                        { name: "Redwood Wood Boots", cmd: "T3_RedwoodWoodBoots" },
+                        { name: "Redwood Wood Bracers", cmd: "T3_RedwoodWoodGloves" },
+                        { name: "Redwood Wood Armor", cmd: "T3_RedwoodWoodTorso" },
+                        { name: "Iron Studded Boots", cmd: "T4_IronBoots" },
+                        { name: "Iron Studded Gauntlets", cmd: "T4_IronGloves" },
+                        { name: "Iron Studded Armor", cmd: "T4_IronTorso" },
+                        { name: "Nibirian Boots", cmd: "T4_NibirianBoots" },
+                        { name: "Nibirian Gauntlets", cmd: "T4_NibirianGloves" },
+                        { name: "Nibirian Armor", cmd: "T4_NibirianTorso" },
+                        { name: "Swampwood Galoshes\n(Rain Boots)", cmd: "RainBoots" },
+                        { name: "Rupu Desolator Armor", cmd: "RupuDesolatorArmor" },
+                        { name: "Rupu Drudge Armor", cmd: "RupuDrudgeArmor" },
+                        { name: "Rupu Dunestalker Armor", cmd: "RupuDunestalkerArmor" },
+                        { name: "Rupu Firebrand Armor", cmd: "RupuFirebrandArmor" },
+                        { name: "Rupu Forager Armor", cmd: "RupuForagerArmor" },
+                        { name: "Rupu Forerunner Armor", cmd: "RupuForerunnerArmor" },
+                        { name: "Rupu Harasser Armor", cmd: "RupuHarasserArmor" },
+                        { name: "Rupu Hazraki Armor", cmd: "RupuHazrakiArmor" },
+                        { name: "Rupu Plainstrider Armor", cmd: "RupuPlainstriderArmor" },
+                        { name: "Rupu Prophet Armor", cmd: "RupuProphetArmor" },
+                        { name: "Rupu Sentinel Armor", cmd: "RupuSentinelArmor" },
+                        { name: "Rupu Shaman Armor", cmd: "RupuShamanArmor" },
+                        { name: "Rupu Skirmisher Armor", cmd: "RupuSkirmisherArmor" },
+                        { name: "Rupu Thug Armor", cmd: "RupuThugArmor" },{ name: "Cloaked Rupu Fur Armor", cmd: "T1_CloackedRupuFurTorso" }
+                    ],
+
+                    weapons: [
+                        { name: "Stone Axe(One Handed)", cmd: "stoneaxe" },
+                        { name: "Rawbone Club\n(One Handed)", cmd: "BoneClub" },
+                        { name: "Rawbone Hand Axe\n(One Handed)", cmd: "BrittleBoneAxe" },
+                        { name: "Spikebone Club\n(One Handed)", cmd: "BoneMace" },
+                        { name: "Bonespike Sword\n(One Handed)", cmd: "OneHandedBoneSword" },
+                        { name: "Wyndan Hammer\n(One Handed)", cmd: "OneHandedIronMace2" },
+                        { name: "Wyndan Sabre\n(One Handed)", cmd: "OneHandedIronSword2" },
+                        { name: "Wyndan Hand Axe\n(One Handed)", cmd: "OneHandedIronAxe2" },
+                        { name: "Firestone Bludgeon\n(One Handed)", cmd: "OneHandedLavaMace" },
+                        { name: "Firestone Kopesh\n(One Handed)", cmd: "OneHandedLavaSword" },
+                        { name: "Firestone Axe\n(One Handed)", cmd: "OneHandedLavaAxe" },
+                        { name: "Jaggertooth\n(One Handed)", cmd: "OneHandedStoneClub" },
+                        { name: "Nibiran Hammer\n(One Handed)", cmd: "OneHandedTitaniumMace2" },
+                        { name: "Nibiran Curved Dagger\n(One Handed)", cmd: "OneHandedTitaniumSword2" },
+                        { name: "Nibiran Hand Axe\n(One Handed)", cmd: "OneHandedRareMetalAxe2" },
+                        { name: "Short Ceramic Hoofmace\n(One Handed)", cmd: "OneHandedZirconiumMace" },
+                        { name: "Short MalletBlade\n(One Handed)", cmd: "OneHandedZirconiumSword" },
+                        { name: "Ceramic Hatchet\n(One Handed)", cmd: "OneHandedZirconiumAxe" },
+                        { name: "Travellers Staff", cmd: "TravellersStaff" },
+                        { name: "Rawbone Quarterstaff ", cmd: "BoneQuarterstaff" },
+                        { name: "Wyndanblade Quarterstaff", cmd: "IronQuarterstaff2" },
+                        { name: "Blunt Quaterstaff", cmd: "ShortQuarterstaff" },
+                        { name: "Ironblade Quaterstaff", cmd: "TitaniumQuarterstaffBlade2" },
+                        { name: "Nibiran Quarterstaff", cmd: "TitaniumQuarterstaffBlunt2" },
+                        { name: "PaddleBlade Quaterstaff", cmd: "ZirconiumQuarterstaff" },
+                        { name: "Firestone Hammerstaff", cmd: "LavaQuarterstaffBlunt" },
+                        { name: "Firestone Bladestaff", cmd: "LavaQuarterstaffSword" },
+                        { name: "Light Javelin", cmd: "Javelin" },
+                        { name: "Light Javelin (Rupu)", cmd: "JavelinRupu" },
+                        { name: "Heavy Javelin", cmd: "HeavyJavelin" },
+                        { name: "* Heavy Javelin Rupu", cmd: "HeavyJavelinRupu" },
+                        { name: "* Heavy Javelin Rupu T2", cmd: "HeavyJavelinRupu_t2" },
+                        { name: "Wooden Rod\n(T1 - 80 Damage)", cmd: "RupuBolt_T1" },
+                        { name: "Wooden Rod\n(T2 - 100 Damage)", cmd: "RupuBolt_T2" },
+                        { name: "Wooden Rod\n(T3 - 125 Damage)", cmd: "RupuBolt_T3" },
+                        { name: "Wooden Rod\n(T4 - 150 Damage)", cmd: "RupuBolt_T4" },
+                        { name: "* Rupu Bone Javelin", cmd: "RupuBoneJavelin" },
+                        { name: "* Rupu Mace", cmd: "RupuBoneMace" },
+                        { name: "* Rupu Throwable Insect Bomb", cmd: "RupuThrowableInsectBomb" },
+                        { name: "Throwstone", cmd: "Throwstone" },
+                        { name: "Throwstone\n(player)", cmd: "PlayerThrowstoneAmmo" },
+                        { name: "Throwing Net", cmd: "ThrowingNet" },
+                        { name: "Firebomb", cmd: "ThrowingLavaBomb" },
+                        { name: "Bomb Javelin", cmd: "BombJavelin" },
+                        { name: "Throwable Insect Bomb", cmd: "ThrowableInsectBomb" },
+                        { name: "Rawbone Battle Axe\n(Two Handed)", cmd: "TwoHandedBoneAxe" },
+                        { name: "Rawbone Maul\n(Two Handed)", cmd: "TwoHandedBoneMace" },
+                        { name: "Spikebone Maul\n(Two Handed)", cmd: "TwoHandedBoneSpikedClub" },
+                        { name: "Long Bonespike Swordstaff\n(Two Handed)", cmd: "TwoHandedBoneSword" },
+                        { name: "Rawbone Sawsword\n(Two Handed)", cmd: "TwoHandedBoneSwordShort" },
+                        { name: "Wyndan Battle Axe\n(Two Handed)", cmd: "TwoHandedIronAxe2" },
+                        { name: "Wyndan Warhammer\n(Two Handed)", cmd: "TwoHandedIronMaul2" },
+                        { name: "Wyndan Flame Sword\n(Two Handed)", cmd: "TwoHandedIronSword2" },
+                        { name: "Nibiran Battle Axe\n(Two Handed)", cmd: "TwoHandedRareMetalAxe2" },
+                        { name: "Nibirian Warhammer\n(Two Handed)", cmd: "TwoHandedRareMetalMace2" },
+                        { name: "Jaggertooth Maul\n(Two Handed)", cmd: "TwoHandedStoneMace" },
+                        { name: "Jaggertooth Swordclub\n(Two Handed)", cmd: "TwoHandedStoneSword" },
+                        { name: "Nibiran Decapitator\n(Two Handed)", cmd: "TwoHandedTitaniumSword2" },
+                        { name: "Singblade\n(Two Handed)", cmd: "TwoHandedZirconiumSword" },
+                        { name: "Long Ceramic Hoofmace\n(Two Handed)", cmd: "TwoHandedZirconiumMace" },
+                        { name: "Rawbone Sawsword\n(Two Handed)", cmd: "TwoHandedBoneSwordShort" },
+                        { name: "Firestone Battleaxe\n(Two Handed)", cmd: "TwoHandedLavaAxe" },
+                        { name: "Firestone Bozdogan\n(Two Handed)", cmd: "TwoHandedLavaMace" },
+                        { name: "Firestone Longblade\n(Two Handed)", cmd: "TwoHandedLavaSword" },
+                        { name: "Wooden Club\n(Rupu)", cmd: "BrokenWoodenClubRupu" },
+                        { name: "Stone Monkey Sword 1", cmd: "HazrakiAxe01" },
+                        { name: "Stone Monkey Sword 2", cmd: "HazrakiAxe02" },
+                        { name: "Holy Fire", cmd: "HolyFire" },
+                        { name: "Heavy Rawbone Hand Axe", cmd: "LargeBoneAxe" },
+                        { name: "Rupu Firebrand Axe", cmd: "RupuFirebrandAxe  " },
+                        { name: "Rupu Mace", cmd: "RupuMace" },
+                        { name: "Rupu Stone Mace", cmd: "RupuStoneMace" },
+                        { name: "Beat Stick", cmd: "WoodenClub" },
+                        { name: "Wooden Club", cmd: "WoodenClubRupu" }
+                    ],
+
+                    tools: [
+                        { name: "Ancient Repair Hammer", cmd: "AncientRepairHammer" },
+                        { name: "Torch", cmd: "HandTorch" },
+                        { name: "Simple Pickaxe", cmd: "SimplePickaxe" },
+                        { name: "Bone Pickaxe", cmd: "BonePickaxe" },
+                        { name: "Ceramic Pickaxe", cmd: "CeramicPickaxe" },
+                        { name: "Chitin PickAxe", cmd: "ChitinPickAxe" },
+                        { name: "Crude Hatchet", cmd: "CrudeHatchet" },
+                        { name: "Iron Pickaxe", cmd: "IronPickaxe" },
+                        { name: "Infused Pickaxe", cmd: "InfusedPickaxe" },
+                        { name: "Simple Sickle", cmd: "SimpleSickle" },
+                        { name: "Bone Sickle", cmd: "BoneSickle" },
+                        { name: "Ceramic Pickaxe", cmd: "CeramicPickaxe" },
+                        { name: "Chitin Sickle", cmd: "ChitinSickle" },
+                        { name: "Iron Scythe", cmd: "IronScythe" },
+                        { name: "Infused Scythe", cmd: "InfusedScythe" },
+                        { name: "Simple Repair Hammer", cmd: "SimpleRepairHammer" },
+                        { name: "Bone Repair Hammer", cmd: "BoneRepairHammer" },
+                        { name: "Ceramic Repair Hammer", cmd: "CeramicRepairHammer" },
+                        { name: "Chitin Repair Hammer", cmd: "ChitinRepairHammer" },
+                        { name: "Iron Repair Hammer", cmd: "IronRepairHammer" },
+                        { name: "Infused Repair Hammer", cmd: "InfusedRepairHammer" },
+                        { name: "Broken Grappling Hook", cmd: "BrokenGrapplingHook" },
+                        { name: "Repaired Grappling Hook", cmd: "GrapplingHook" },
+                        { name: "Fast Grappling Hook", cmd: "FastGrapplingHook" },
+                        { name: "Sturdy Grappling Hook", cmd: "SturdyGrapplingHook" },
+                        { name: "Long Grappling Hook", cmd: "LongGrapplingHook" },
+                        { name: "Flotillan Grappling Hook", cmd: "FlotillanGrapplingHook" },
+                        { name: "Nomad Grappling Hook ", cmd: "FixedGrapplingHook" },
+                        { name: "Makeshift Grappling Hook", cmd: "MakeshiftGrapplingHook" },
+                        { name: "Drill Spade", cmd: "DrillSpade" },{ name: "Tube Spade", cmd: "TubeSpade" }
+                    ],
+
+                    ammo: [
+                        { name: "Flint Bolt", cmd: "FlintBolt" },
+                        { name: "Flint Harpoon", cmd: "FlintHarpoon" },
+                        { name: "Flint Orb", cmd: "FlintOrb" },
+                        { name: "Bone Dart", cmd: "BoneDart" },
+                        { name: "Bone Bolt", cmd: "BoneBolt" },
+                        { name: "Bone Harpoon", cmd: "BoneHarpoon" },
+                        { name: "Bone Scattershot", cmd: "BoneScattershot" },
+                        { name: "Ceramic Bolt", cmd: "CeramicBolt" },
+                        { name: "Ceramic Dart", cmd: "CeramicDart" },
+                        { name: "Ceramic Harpoon", cmd: "CeramicHarpoon" },
+                        { name: "Ceramic Orb", cmd: "CeramicOrb" },
+                        { name: "Ceramic Rok", cmd: "CeramicRok" },
+                        { name: "Ceramic Scattershot", cmd: "CeramicScattershot" },
+                        { name: "Iron Bolt", cmd: "IronBolt" },
+                        { name: "Iron Dart", cmd: "IronDart" },
+                        { name: "Iron Harpoon", cmd: "IronHarpoon" },
+                        { name: "Iron Rok", cmd: "IronRok" },
+                        { name: "Fire Bolt", cmd: "FireBolt" },
+                        { name: "Fire Bomb", cmd: "FireBomb" },
+                        { name: "Fire Dart", cmd: "FireDart" },
+                        { name: "Floating Mine", cmd: "FloatingMine" },
+                        { name: "Hellfire Bolt", cmd: "HellfireBolt" },
+                        { name: "Explosive Bolt", cmd: "ExplosiveBolt" },
+                        { name: "Explosive Dart", cmd: "ExplosiveDart" },
+                        { name: "Catapult Boulder", cmd: "CatapultBoulder" },
+                        { name: "Obsidian Rok", cmd: "ObsidianRok" },
+                        { name: "Hullbreaker Scattershot", cmd: "HullbreakerScattershot" },
+                        { name: "Chalk Bomb", cmd: "ChalkCloudBomb" },
+                        { name: "Charged Boulder", cmd: "ChargedBoulder" },
+                        { name: "Charged Rok", cmd: "ChargedRok" },
+                        { name: "Chitin Bolt", cmd: "ChitinBolt" },
+                        { name: "Chitin Dart", cmd: "ChitinDart" },
+                        { name: "Chitin Harpoon", cmd: "ChitinHarpoon" },
+                        { name: "Cluster Bomb", cmd: "ClusterBomb" },
+                        { name: "Sulfur Bomb", cmd: "SulfurBomb" },
+                        { name: "Net", cmd: "Net" },
+                        { name: "Nibirian Bolt", cmd: "NibirianBolt" },
+                        { name: "Nibirian Dart", cmd: "NibirianDart" },
+                        { name: "Nibirian Harpoon", cmd: "NibirianHarpoon" },
+                        { name: "* Floating Mine", cmd: "RupuAntiAirFloatingMine" },
+                        { name: "* Insect Bomb", cmd: "RupuBallistaInsectBomb" },
+                        { name: "* Rupu Boulder T2", cmd: "RupuBoulder_T2" },
+                        { name: "* Rupu Boulder T3", cmd: "RupuBoulder_T3" },
+                        { name: "* Rupu Carpet Bomb", cmd: "RupuCarpetBomb" },
+                        { name: "* Rupu Dart T1", cmd: "RupuDart_T1" },
+                        { name: "* Rupu Dart T2", cmd: "RupuDart_T2" },
+                        { name: "* Rupu Dart T3", cmd: "RupuDart_T3" },
+                        { name: "* Rupu Dart T4", cmd: "RupuDart_T4" },
+                        { name: "* Rupu Explosive Harpoon", cmd: "RupuExplosiveHarpoon" },
+                        { name: "* Rupu Fire Boulder T2", cmd: "RupuFireBoulder_T2" },
+                        { name: "* Rupu Fire Boulder T3", cmd: "RupuFireBoulder_T3" },
+                        { name: "* Rupu Gas Bomb", cmd: "RupuGasBomb" },
+                        { name: "* Rupu Lava Bomb", cmd: "RupuLavaBombItem" },
+                        { name: "* Rupu Orb", cmd: "RupuOrb" },
+                        { name: "* Rupu Rock", cmd: "RupuRock" },
+                        { name: "* Rupu Rok T1", cmd: "RupuRok_T1" },
+                        { name: "* Rupu Rok T2", cmd: "RupuRok_T2" },
+                        { name: "* Rupu Rok T3", cmd: "RupuRok_T3" },
+                        { name: "* Rupu Rok T4", cmd: "RupuRok_T4" },
+                        { name: "* Rupu Scattershot T1", cmd: "RupuScattershot_T1" },
+                        { name: "* Rupu Scattershot T2", cmd: "RupuScattershot_T2" },
+                        { name: "* Rupu Scattershot T3", cmd: "RupuScattershot_T3" },
+                        { name: "* Rupu Scattershot T4", cmd: "RupuScattershot_T4" },
+                        { name: "* Rupu Stone Bolas T2", cmd: "RupuStoneBolas_T2" },
+                        { name: "* Rupu Throwstone", cmd: "RupuThrowstone" },
+                        { name: "* Rupu Turret Boulder T3", cmd: "RupuTurretBoulder_T3" },
+                        { name: "Scattershot", cmd: "Scattershot" },
+                        { name: "Green Gas Bomb", cmd: "GasBomb" },
+                        { name: "Bombolt", cmd: "Bombolt" },
+                        { name: "* Crane Harpoon", cmd: "CraneHarpoon" },
+                        { name: "Hardened Hellfire Bolt", cmd: "HardenedHellfireBolt" },
+                        { name: "Aloe Goo Bomb", cmd: "HealingBomb" },
+                        { name: "Insect Bomb", cmd: "InsectBomb" },
+                        { name: "Penetrating Dart", cmd: "PenetratingDart" },
+                        { name: "Sunset Harpoon", cmd: "SunsetHarpoonItem" },
+                        { name: "Super Cluster Bomb", cmd: "SuperClusterBomb" },
+                        { name: "Throwable Insect Bomb", cmd: "ThrowableInsectBomb" },
+                        { name: "Throwable Smoke Bomb", cmd: "ThrowableSmokeBomb" },
+                        { name: "Throwing Lava Bomb", cmd: "ThrowingLavaBomb" },{ name: "Wooden Dart", cmd: "WoodenDart" }
+                    ],
+
+                    resources: [
+                        { name: "Wood", cmd: "Wood" },
+                        { name: "Redwood Wood", cmd: "RedwoodWood" },
+                        { name: "Wooden Shaft", cmd: "WoodenShaft" },
+                        { name: "Wooden Slab", cmd: "WoodenSlab" },
+                        { name: "Stone", cmd: "Stone" },
+                        { name: "Fiber", cmd: "fiber" },
+                        { name: "Iron Ore", cmd: "IronOre" },
+                        { name: "Iron Ingot", cmd: "IronIngot2" },
+                        { name: "Red Banana", cmd: "RedBanana" },
+                        { name: "Aloe", cmd: "Aloe" },
+                        { name: "Aloe Gel", cmd: "AloeGel" },
+                        { name: "Apple", cmd: "Apple" },
+                        { name: "Ash", cmd: "Ash" },
+                        { name: "Nomad Cloth", cmd: "BasicCloth" },
+                        { name: "Beeswax", cmd: "Beeswax" },
+                        { name: "Bent Planks", cmd: "BentPlanks" },
+                        { name: "Blood Turnip", cmd: "BloodTurnip" },
+                        { name: "Bone Glue", cmd: "BoneGlue" },
+                        { name: "Bone Splinter", cmd: "BoneSplinter" },
+                        { name: "Cactus Flesh", cmd: "CactusFlesh" },
+                        { name: "Huge Cactus Fruit", cmd: "CactusFruit" },
+                        { name: "Cattail", cmd: "Cattail" },
+                        { name: "Ceramic Nails", cmd: "CeramicNails" },
+                        { name: "Ceramic Shard", cmd: "CeramicShard" },
+                        { name: "Charcoal", cmd: "CharcoalFuel" },
+                        { name: "Chitin Plate", cmd: "ChitinShell" },
+                        { name: "Clay", cmd: "ClayLump" },
+                        { name: "Corn", cmd: "Corn" },
+                        { name: "Cotton", cmd: "Cotton" },
+                        { name: "Earth Wax", cmd: "EarthWax" },
+                        { name: "Glass", cmd: "EmptyGlassVial" },
+                        { name: "Eucalyptus Leaf", cmd: "EucalyptusLeaf" },
+                        { name: "Animal Fat", cmd: "Fat" },
+                        { name: "Feather", cmd: "Feather" },
+                        { name: "Fiber Weave", cmd: "FiberCloth" },
+                        { name: "Flint", cmd: "Flint" },
+                        { name: "Fruit Pulp", cmd: "FruitPulp" },
+                        { name: "Tallow", cmd: "Fuel" },
+                        { name: "Gelatinous Goo", cmd: "GelatinousGoo" },
+                        { name: "Nibiran Mineral", cmd: "GlowingOre" },
+                        { name: "Hide", cmd: "Hide" },
+                        { name: "Hollowbone", cmd: "Hollowbone" },
+                        { name: "Insects", cmd: "Insects" },
+                        { name: "Wooden Gear", cmd: "WoodenGear" },
+                        { name: "Iron Gear", cmd: "IronGear" },
+                        { name: "Reinforced Gear", cmd: "ReinforcedGear" },
+                        { name: "Iron Nails", cmd: "IronNails" },
+                        { name: "Lava", cmd: "Lava" },
+                        { name: "Lava Fuel", cmd: "LavaFuel" },
+                        { name: "Leather", cmd: "Leather" },
+                        { name: "Lightwood", cmd: "Lightwood" },
+                        { name: "* Log", cmd: "Log" },
+                        { name: "Magma Seeds", cmd: "MagmaSeeds" },
+                        { name: "Meteor Core", cmd: "MeteorCore" },
+                        { name: "Rupu Gel", cmd: "MonkeySecretion" },
+                        { name: "Mushroom Flesh", cmd: "MushroomFlesh" },
+                        { name: "Nibiran Ingot", cmd: "NibiranIngot" },
+                        { name: "Nurr Fang", cmd: "NurrFang" },
+                        { name: "Obsidian", cmd: "Obsidian" },
+                        { name: "Palm Leaves", cmd: "PalmLeaves" },
+                        { name: "Pearl", cmd: "Pearl" },
+                        { name: "Phosphorus", cmd: "Phosphorus" },
+                        { name: "Lave Poppy", cmd: "Poppy" },
+                        { name: "Proxy License", cmd: "ProxyLicense" },
+                        { name: "Reinforced Plank", cmd: "ReinforcedPlank2" },
+                        { name: "Rope", cmd: "Rope" },
+                        { name: "Rubber Block", cmd: "Rubber" },
+                        { name: "Rupu Pelt", cmd: "RupuFur" },
+                        { name: "Rupu Vine", cmd: "RupuVine" },
+                        { name: "Salt", cmd: "Salt" },
+                        { name: "Sand", cmd: "Sand" },
+                        { name: "Sulfur", cmd: "Sulfur" },
+                        { name: "Tar", cmd: "Tar" },
+                        { name: "Thorn Berry", cmd: "ThornBerry" },
+                        { name: "Torque", cmd: "Torque" },
+                        { name: "Tree Sap", cmd: "TreeSap" },
+                        { name: "Triple Stitch Fabric", cmd: "TripleStitch" },
+                        { name: "Wooden Shaft", cmd: "WoodenShaft" },
+                        { name: "Wooden Slab", cmd: "WoodenSlab" },
+                        { name: "Worm Egg", cmd: "WormEgg" },
+                        { name: "Worm Fang", cmd: "WormFang" },
+                        { name: "Worm Oil", cmd: "WormOil" },
+                        { name: "Worm Sand", cmd: "WormSand" },
+                        { name: "Worm Scale", cmd: "WormScale" },{ name: "Worm Silk", cmd: "WormSilk" }
+                    ],
+
+                    consumables: [
+                        { name: "Bonebreaker", cmd: "Bonebreaker" },
+                        { name: "Vision Powder", cmd: "VisionPowder" },
+                        { name: "Desert Mule", cmd: "DesertMule" },
+                        { name: "SinusDestroyer", cmd: "SinusDestroyer" },
+                        { name: "Jojo Mojo", cmd: "JojoMojo" },
+                        { name: "Fury Fumes", cmd: "FuryFumes" },
+                        { name: "Race Dust", cmd: "RaceDust" },
+                        { name: "Rupu Repellent", cmd: "RupuRepellent" },
+                        { name: "Wanderers Potion", cmd: "RespecPotion" },
+                        { name: "Worm Tincture", cmd: "WormTincture" },
+                        { name: "Brine Water", cmd: "BrineWater" },
+                        { name: "Contaminated Water", cmd: "ContaminatedWater" },
+                        { name: "Dirty Water", cmd: "DirtyWater" },
+                        { name: "Purified Water", cmd: "NormalWater" },
+                        { name: "Sterile Bandage", cmd: "ClothBandage" },
+                        { name: "Primitive Bandage", cmd: "FiberBandage" },
+                        { name: "White Flare", cmd: "Flare_00" },
+                        { name: "Red Flare", cmd: "Flare_01" },
+                        { name: "Green Flare", cmd: "Flare_02" },
+                        { name: "Blue Flare", cmd: "Flare_03" },
+                        { name: "Orange Flare", cmd: "Flare_04" },
+                        { name: "Purple Flare", cmd: "Flare_05" },
+                        { name: "Teal Flare", cmd: "Flare_06" },
+                        { name: "Torque", cmd: "Torque" },
+                        { name: "Apple Kambaro", cmd: "AppleKambaro" },
+                        { name: "Cooked Corn", cmd: "CookedCorn" },
+                        { name: "Firework 1", cmd: "Firework_00" },
+                        { name: "Firework 2", cmd: "Firework_01" },
+                        { name: "Firework 3", cmd: "Firework_02" },
+                        { name: "Firework 4", cmd: "Firework_03" },
+                        { name: "Firework 5", cmd: "Firework_04" },
+                        { name: "Firework 6", cmd: "Firework_05" },
+                        { name: "Firework 7", cmd: "Firework_06" },
+                        { name: "Forebear Coin", cmd: "ForebearCoin" },
+                        { name: "Flots", cmd: "Currency" },
+                        { name: "* Fragment (old)", cmd: "Fragment" },
+                        { name: "Fragment (Exp.)", cmd: "FragmentExp" },
+                        { name: "Armor Strongbox", cmd: "LootBoxArmors" },
+                        { name: "Equipment Strongbox", cmd: "LootBoxEquipment" },
+                        { name: "Modules Strongbox", cmd: "LootBoxModules" },
+                        { name: "Armor Strongbox", cmd: "LootBoxPotions" },
+                        { name: "Module Components Strongbox", cmd: "LootBoxRigs" },
+                        { name: "T2 Schematics Strongbox", cmd: "LootBoxSchematics_T2" },
+                        { name: "Fragment Strongbox", cmd: "LootBoxTablets" },
+                        { name: "Tools Strongbox", cmd: "LootBoxTools" },
+                        { name: "Weapons Strongbox", cmd: "LootBoxWeapons" },
+                        { name: "Armor Strongbox (PvP)", cmd: "LootboxArmorsCanyonPvP" },
+                        { name: "Advance Schematics strongbox", cmd: "LootboxSchematics_T3" },
+                        { name: "Flotillan Schematics Strongbox", cmd: "LootboxSchematics_T4" },
+                        { name: "Tools And Equipment Strongbox (PvP)", cmd: "LootboxToolsandEquipmentPvP" },
+                        { name: "Weapon Strongbox (PvP)", cmd: "LootboxWeaponsCanyonPvP" },
+                        { name: "Throwable Aloe Bomb", cmd: "ThrowableAloeBomb" },
+                        { name: "Treasure Map", cmd: "TreasureMap" },{ name: "Zirconium Metal", cmd: "ZirconiumMetal" }
+                    ],
+
+                    modules: [
+                        { name: "Structure Hardening\n(Base)", cmd: "BaseArmorModule" },
+                        { name: "Craftsman\n(Base)", cmd: "BaseCraftingTimeModule" },
+                        { name: "Pack Speed\n(Base)", cmd: "BasePackingTimeModule" },
+                        { name: "Bullrush\n(Base)", cmd: "BaseRespawnTimeModule" },
+                        { name: "Fortress\n(Walker)", cmd: "WalkerArmorModule" },
+                        { name: "Merchant\n(Walker)", cmd: "WalkerCargoModule" },
+                        { name: "Craftsman\n(Walker)", cmd: "WalkerCraftingTimeModule" },
+                        { name: "Fireproof\n(Walker)", cmd: "WalkerFireproofModule" },
+                        { name: "Armoury\n(Walker)", cmd: "WalkerGearModule" },
+                        { name: "Hardening\n(Walker)", cmd: " WalkerHullHardeningModule" },
+                        { name: "Forager\n(Walker)", cmd: "WalkerLegHarvestingModule" },
+                        { name: "Scavenger\n(Walker)", cmd: "WalkerLegItemLootingModule" },
+                        { name: "Lumberjack\n(Walker)", cmd: "WalkerLegLoggingModule" },
+                        { name: "Pack Speed\n(Walker)", cmd: "WalkerPackingTimeModule" },
+                        { name: "Hearth\n(Walker)", cmd: "WalkerRespawnCostModule" },
+                        { name: "Lifeforce\n(Walker)", cmd: "WalkerRespawnEffectModule" },
+                        { name: "Bullrush\n(Walker)", cmd: "WalkerRespawnTimeModule" },
+                        { name: "Sandy\n(Walker)", cmd: "WalkerSandinessReductionModule" },
+                        { name: "Harpoon Protection\n(Walker)", cmd: "WalkerTetherProtectionModule" },
+                        { name: "Battery\n(Walker)", cmd: "WalkerTorqueCapacityBoost" },
+                        { name: "Torque\n(Walker)", cmd: "WalkerTorqueGenerationModule" },
+                        { name: "Watery\n(Walker)", cmd: "WalkerTravelCostModule" },
+                        { name: "Pack Mule\n(Walker)", cmd: "WalkerWeightCapacityModule" },{ name: "Weightless\n(Walker)", cmd: "WalkerWeightlessModule" }
+                    ],
+
+                    module_components: [
+                        { name: "Cog", cmd: "Cog" },
+                        { name: "Lever", cmd: "Lever" },
+                        { name: "Strut", cmd: "Strut" },
+                        { name: "Spring", cmd: "Spring" },
+                        { name: "Shackle", cmd: "Shackle" },
+                        { name: "Spline", cmd: "Spline" }
+                    ],
+
+                    schematics: [
+                        { name: "Basic Armors", cmd: "Armors_T1Schematic" },
+                        { name: "Improved Armors", cmd: "Armors_T2Schematic" },
+                        { name: "Advanced Armors", cmd: "Armors_T3Schematic" },
+                        { name: "Flotillian Armors", cmd: "Armors_T4Schematic" },
+                        { name: "Balang", cmd: "BalangSchematic" },
+                        { name: "Buffalo", cmd: "BuffaloSchematic" },
+                        { name: "Camelop", cmd: "CamelopSchematic" },
+                        { name: "Clay Walls", cmd: "ClayWallsSchematic" },
+                        { name: "Cobra", cmd: "CobraSchematic" },
+                        { name: "Concrete Walls", cmd: "ConcreteWallsSchematic" },
+                        { name: "Basic Construction", cmd: "Constructions_T1Schematic" },
+                        { name: "Improved Construction", cmd: "Constructions_T2Schematic" },
+                        { name: "AdvancedConstruction", cmd: "Constructions_T3Schematic" },
+                        { name: "Flotillian Construction", cmd: "Constructions_T4Schematic" },
+                        { name: "Dinghy", cmd: "DinghySchematic" },
+                        { name: "Domus", cmd: "DomusSchematic" },
+                        { name: "Falco", cmd: "FalcoSchematic" },
+                        { name: "Firefly", cmd: "FireflySchematic" },
+                        { name: "Heavy Walls", cmd: "HeavyWallsSchematic" },
+                        { name: "Hercul", cmd: "HerculSchematic" },
+                        { name: "Hornet", cmd: "HornetSchematic" },
+                        { name: "Mollusk", cmd: "MolluskSchematic" },
+                        { name: "Panda", cmd: "PandaSchematic" },
+                        { name: "Proxy", cmd: "ProxySchematic" },
+                        { name: "Raptor", cmd: "RaptorSchematic" },
+                        { name: "Reinforced Walls", cmd: "ReinforcedWallsSchematic" },
+                        { name: "Sand Structures", cmd: "SandWallsSchematic" },
+                        { name: "Titan", cmd: "TitanSchematic" },
+                        { name: "Toboggan", cmd: "TobogganSchematic" },
+                        { name: "Basic Tools", cmd: "Tools_T1Schematic" },
+                        { name: "Improved Tools", cmd: "Tools_T2Schematic" },
+                        { name: "Advanced Tools", cmd: "Tools_T3chematic" },
+                        { name: "Flotillian Tool", cmd: "Tools_T4Schematic" },
+                        { name: "Tusker", cmd: "TuskerSchematic" },
+                        { name: "Advanced Walker Parts", cmd: "WalkerPartsAdvancedSchematic" },
+                        { name: "Base Walker Parts", cmd: "WalkerPartsBaseSchematic" },
+                        { name: "Improved Walker Parts", cmd: "WalkerPartsImprovedSchematic" },
+                        { name: "Basic Walker Weapons", cmd: "WalkerWeapons_T1Schematic" },
+                        { name: "Improved Walker Weapons", cmd: "WalkerWeapons_T2Schematic" },
+                        { name: "Advanced Walker Weapons", cmd: "WalkerWeapons_T3Schematic" },
+                        { name: "Flotillian Walker Weapons", cmd: "WalkerWeapons_T4Schematic" },
+                        { name: "Basic Weapons", cmd: "Weapons_T1Schematic" },
+                        { name: "Improved Weapons", cmd: "Weapons_T1Schematic" },
+                        { name: "Advanced Weapons", cmd: "Weapons_T1Schematic" },
+                        { name: "Flotillian Weapons", cmd: "Weapons_T1Schematic" },{ name: "Wooden Walls", cmd: "WoodenWallsSchematic" }
+                    ],
+
+                    rigs: [
+                        { name: "Buffalo T2", cmd: "BuffaloRig_T2Schematic" },
+                        { name: "Buffalo T3", cmd: "BuffaloRig_T3Schematic" },
+                        { name: "Dinghy T2", cmd: "DinghyRig_T2Schematic" },
+                        { name: "Dinghy T2", cmd: "DinghyRig_T3Schematic" },
+                        { name: "Domus T2", cmd: "DomusRig_T2Schematic" },
+                        { name: "Domus T3", cmd: "DomusRig_T3Schematic" },
+                        { name: "Falco T2", cmd: "FalcoRig_T2Schematic" },
+                        { name: "Falco T3", cmd: "FalcoRig_T3Schematic" },
+                        { name: "Firefly T2", cmd: "FireflyRig_T2Schematic" },
+                        { name: "Firefly T3", cmd: "FireflyRig_T3Schematic" },
+                        { name: "Hercul T2", cmd: "HerculRig_T2Schematic" },
+                        { name: "Hercul T3", cmd: "HerculRig_T3Schematic" },
+                        { name: "Hornet T2", cmd: "HornetRig_T2Schematic" },
+                        { name: "Hornet T3", cmd: "HornetRig_T3Schematic" },
+                        { name: "Mollusk T2", cmd: "MolluskRig_T2Schematic" },
+                        { name: "Mollusk T3", cmd: "MolluskRig_T3Schematic" },
+                        { name: "Panda T2", cmd: "PandaRig_T2Schematic" },
+                        { name: "Panda T3", cmd: "PandaRig_T3Schematic" },
+                        { name: "Proxy T2", cmd: "ProxyRig_T2Schematic" },
+                        { name: "Proxy T3", cmd: "ProxyRig_T3Schematic" },
+                        { name: "Raptor T2", cmd: "RaptorRig_T2Schematic" },
+                        { name: "Raptor T3", cmd: "RaptorRig_T3Schematic" },
+                        { name: "Titan T2", cmd: "TitanRig_T2Schematic" },
+                        { name: "Titan T3", cmd: "TitanRig_T3Schematic" },
+                        { name: "Toboggan T2", cmd: "TobogganRig_T2Schematic" },
+                        { name: "Toboggan T3", cmd: "TobogganRig_T3Schematic" },
+                        { name: "Tusker T2", cmd: "TuskerRig_T2Schematic" },
+                        { name: "Tusker T3", cmd: "TuskerRig_T3Schematic" }
+                    ],
+
+                    walker_parts: [
+                        { name: "Armored Small Walker Legs", cmd: "WalkerLegArmored_T1" },
+                        { name: "Armored Medium Walker Legs", cmd: "WalkerLegArmored_T2" },
+                        { name: "Armored Large Walker Legs", cmd: "WalkerLegArmored_T3" },
+                        { name: "Armored Capital Walker Legs", cmd: "WalkerLegArmored_T4" },
+                        { name: "Heavey Medium Walker Legs", cmd: "WalkerLegHeavy_T2" },
+                        { name: "Heavey Large Walker Legs", cmd: "WalkerLegHeavy_T3" },
+                        { name: "Heavey Capital Waler Legs", cmd: "WalkerLegHeavy_T4" },
+                        { name: "Small Walker Legs", cmd: "WalkerLeg_T1" },
+                        { name: "Medium Walker Legs", cmd: "WalkerLeg_T2" },
+                        { name: "Large Walker Legs", cmd: "WalkerLeg_T3" },
+                        { name: "Capital Walker Legs", cmd: "WalkerLeg_T4" },
+                        { name: "Advance Medium Walker Wings", cmd: "WalkerWingAdvanced_T2" },
+                        { name: "Advanced Large Walker Wings", cmd: "WalkerWingAdvanced_T3" },
+                        { name: "Advanced Capital Walker Wings", cmd: "WalkerWingAdvanced_T4" },
+                        { name: "Flotillian Medium Walker Wings", cmd: "WalkerWingFlotillan_T2" },
+                        { name: "Flotillian Large Walker Wings", cmd: "WalkerWingFlotillan_T3" },
+                        { name: "Flotillian Capital Walker Wings", cmd: "WalkerWingFlotillan_T4" },
+                        { name: "Improved Small Walker Wings", cmd: "WalkerWingImproved_T1" },
+                        { name: "Improved Medium Walker Wings", cmd: "WalkerWingImproved_T2" },
+                        { name: "Improved Large Walker Wings", cmd: "WalkerWingImproved_T3" },
+                        { name: "Improved Capital Walker Wings", cmd: "WalkerWingImproved_T4" },
+                        { name: "Small Walker Wings", cmd: "WalkerWing_T1" },
+                        { name: "Medium Walker Wings", cmd: "WalkerWing_T2" },
+                        { name: "Large Walker Wings", cmd: "WalkerWing_T3" },{ name: "Capital Walker Wings", cmd: "WalkerWing_T4" }
+                    ],
+
+                    other: [
+                        { name: "Relic Of Dawn", cmd: "AltarOfTheDawn" },
+                    { name: "Relic Of Dusk", cmd: "AltarOfTheDusk" },
+                    { name: "Relic Of The Stars", cmd: "AltarOfTheStars" },
+                    { name: "* Armor Shipment", cmd: "ArmorShipment" },
+                    { name: "Broken Fragment", cmd: "BrokenFragment" },
+                    { name: "* Cheat Backpack", cmd: "CheatBackpack" },
+                    { name: "* Clay Ground Source", cmd: "Clay_GroundSource" },
+                    { name: "* EarthWax Ground Source", cmd: "EarthWax_GroundSource" },
+                    { name: "* Iron Ore Ground Source", cmd: "IronOre_GroundSource" },
+                    { name: "* Salt Rock Ground Source", cmd: "SaltRock_GroundSource" },
+                    { name: "* Worm Sand Ground Source", cmd: "WormSand_GroundSource" },
+                    { name: "Deliver Package", cmd: "DeliverPackageQuestItem" },
+                    { name: "Delivery Token", cmd: "DeliveryTokenQuestItem" },
+                    { name: "* Force Field", cmd: "ForceField" },
+                    { name: "* Furnace Burning", cmd: "FurnaceBurning" },
+                    { name: "* Fiery Concoction", cmd: "HellfireMixture" },
+                    { name: "* Humidifier Consumption Stub", cmd: "HumidifierConsumptionStub" },
+                    { name: "* Torque Consumption Stub", cmd: "TorqueConsumptionStub" },
+                    { name: "* Water Curing Stub", cmd: "WaterCuringStub" },
+                    { name: "* Knowledge Tablet", cmd: "KnowledgeTablet" },
+                    { name: "* Animals Tablet\n(Old)", cmd: "KnowledgeTabletAnimal" },
+                    { name: "* Celestial Tablet\n(Old)", cmd: "KnowledgeTabletCelestial" },
+                    { name: "* Elements Tablet\n(Old)", cmd: "KnowledgeTabletElements" },
+                    { name: "* Random Knowledge Tablet\n(Old System)", cmd: "RandomKnowledgeTablet" },
+                    { name: "Contrabass\n(Instrument)", cmd: "MusicalInstrumentContrabass" },
+                    { name: "Didgeridoo\n(Instrument)", cmd: "MusicalInstrumentDidgeridoo" },
+                    { name: "Djembe\n(Instrument)", cmd: "MusicalInstrumentDjembe" },
+                    { name: "Kaval\n(Instrument)", cmd: "MusicalInstrumentKaval" },
+                    { name: "Oud\n(Instrument)", cmd: "MusicalInstrumentOud" },
+                    { name: "Rubab\n(Instrument)", cmd: "MusicalInstrumentRubab" },
+                    { name: "Tambourine\n(Instrument)", cmd: "MusicalInstrumentTambourine" },
+                    { name: "Violin\n(Instrument)", cmd: "MusicalInstrumentViolin" },
+                    { name: "Toxic Remains", cmd: "ToxicRemains" },
+                    { name: "* Water Pitcher", cmd: "WaterPitcher" },
+                    { name: "* Weapon Shipment", cmd: "WeaponShipment" }
+                    ]
+                },
+
+                walkers: [
+                    { name: "Balang", cmd: "Balang" },
+                    { name: "Buffalo", cmd: "Buffalo" },
+                    { name: "Camelop", cmd: "Camelop" },
+                    { name: "Cobra", cmd: "Cobra" },
+                    { name: "Dinghy", cmd: "Dinghy" },
+                    { name: "Domus", cmd: "Domus" },
+                    { name: "Falco", cmd: "Falco" },
+                    { name: "Firefly", cmd: "Firefly" },
+                    { name: "Hercul", cmd: "Hercul" },
+                    { name: "Hornet", cmd: "Hornet" },
+                    { name: "Mollusk", cmd: "Mollusk" },
+                    { name: "Nomad", cmd: "Nomad" },
+                    { name: "Panda", cmd: "Panda" },
+                    { name: "Proxy", cmd: "Proxy" },
+                    { name: "Raptor", cmd: "Raptor" },
+                    { name: "Schmetterling", cmd: "Schmetterling" },
+                    { name: "Silur", cmd: "Silur" },
+                    { name: "Spider", cmd: "Spider" },
+                    { name: "Stiletto", cmd: "Stiletto" },
+                    { name: "Titan", cmd: "Titan" },
+                    { name: "Toboggan", cmd: "Toboggan" },
+                    { name: "Tusker", cmd: "Tusker" }
+                ],
+
+                mobs: [
+                    { name: "Arke Mob", cmd: "ArkeMob" },
+                    { name: "Default Rupu Mob", cmd: "DefaultRupuMob" },
+                    { name: "Fearful Rupu", cmd: "FearfulRupu" },
+                    { name: "Fire Elemental Mob", cmd: "FireElementalMob" },
+                    { name: "Flying Rupu", cmd: "FlyingRupu" },
+                    { name: "Gogo Mob", cmd: "GogoMob" },
+                    { name: "Gogo Mob Q", cmd: "GogoMob_Q" },
+                    { name: "Illusive Giant Rupu", cmd: "IllusiveGiantRupu" },
+                    { name: "Impossible Rupu", cmd: "ImpossibleRupu" },
+                    { name: "Killin Mob", cmd: "KillinMob" },
+                    { name: "Koa Mob", cmd: "KoaMob" },
+                    { name: "Koa Mob Q", cmd: "KoaMob_Q" },
+                    { name: "Lava Papak Mob", cmd: "LavaPapakMob" },
+                    { name: "Lava Papak Mob Q", cmd: "LavaPapakMob_Q" },
+                    { name: "Mountable Nurr Mob", cmd: "MountableNurrMob" },
+                    { name: "Nomad Base", cmd: "Nomad_Base" },
+                    { name: "Nomad T1", cmd: "Nomad_T1" },
+                    { name: "Nomad T2", cmd: "Nomad_T2" },
+                    { name: "Nomad T3", cmd: "Nomad_T3" },
+                    { name: "Nomad T4", cmd: "Nomad_T4" },
+                    { name: "Nurr Mob", cmd: "NurrMob" },
+                    { name: "Nurr Mob Large", cmd: "NurrMobLarge" },
+                    { name: "Nurr Mob Large Q", cmd: "NurrMobLarge_Q" },
+                    { name: "Nurr Mob Q", cmd: "NurrMob_Q" },
+                    { name: "Okkam Mob", cmd: "OkkamMob" },
+                    { name: "Okkam Mob Q", cmd: "OkkamMob_Q" },
+                    { name: "Papak Mob", cmd: "PapakMob" },
+                    { name: "Papak Mob Q", cmd: "PapakMob_Q" },
+                    { name: "Phemke Mob", cmd: "PhemkeMob" },
+                    { name: "Protector Rupu", cmd: "ProtectorRupu" },
+                    { name: "Pyramid Guard Rupu", cmd: "PyramidGuardRupu" },
+                    { name: "Raging Rupu", cmd: "RagingRupu" },
+                    { name: "Rupu Drudge T0", cmd: "RupuDrudge_T0" },
+                    { name: "Rupu Forerunner", cmd: "RupuForerunner" },
+                    { name: "Rupu Forerunner T2", cmd: "RupuForerunner_T2" },
+                    { name: "Rupu Forerunner T3", cmd: "RupuForerunner_T3" },
+                    { name: "Rupu Hazraki T2", cmd: "RupuHazraki_T2" },
+                    { name: "Rupu Oracle", cmd: "RupuOracle" },
+                    { name: "Rupu Overseer", cmd: "RupuOverseer" },
+                    { name: "Rupu Priestess Fire Bomb", cmd: "RupuPriestessFireBomb" },
+                    { name: "Rupu Prophet", cmd: "RupuProphet" },
+                    { name: "Rupu Scavenger T2", cmd: "RupuScavenger_T2" },
+                    { name: "Rupu Scavenger T3", cmd: "RupuScavenger_T3" },
+                    { name: "Rupu Sentinel T2", cmd: "RupuSentinel_T2" },
+                    { name: "Rupu Sentinel T3", cmd: "RupuSentinel_T2" },
+                    { name: "Rupu Shaman T2", cmd: "RupuShaman_T2" },
+                    { name: "Rupu Shaman T3", cmd: "RupuShaman_T3" },
+                    { name: "Rupu Stalker", cmd: "RupuStalker" },
+                    { name: "Rupu Walker Gunner", cmd: "RupuWalkerGunner" },
+                    { name: "Small Worm Mob", cmd: "SmallWormMob" },
+                    { name: "Swamp Papak Mob", cmd: "SwampPapakMob" },
+                    { name: "Swamp Papak Mob Q", cmd: "SwampPapakMob_Q" },
+                    { name: "T1 Rupu Forerunner", cmd: "T1_RupuForerunner" },
+                    { name: "T1 RupuForerunner Q", cmd: "T1_RupuForerunner_Q" },
+                    { name: "T1 Rupu Harasser", cmd: "T1_RupuHarasser" },
+                    { name: "T1 Rupu Harasser Q", cmd: "T1_RupuHarasser_Q" },
+                    { name: "T1 Rupu Scavenger", cmd: "T1_RupuScavenger" },
+                    { name: "T1 Rupu Scavenger Q", cmd: "T1_RupuScavenger_Q" },
+                    { name: "T1 Rupu Sentinel", cmd: "T1_RupuSentinel" },
+                    { name: "T1 Rupu Sentinel Q", cmd: "T1_RupuSentinel_Q" },
+                    { name: "T1 Rupu Skirmisher", cmd: "T1_RupuSkirmisher" },
+                    { name: "T1 Rupu Skirmisher Q", cmd: "T1_RupuSkirmisher_Q" },
+                    { name: "T1 Rupu Thug", cmd: "T1_RupuThug" },
+                    { name: "T1 Rupu Thug Q", cmd: "T1_RupuThug_Q" },
+                    { name: "T2 Nurr Raider Mob", cmd: "T2_NurrRaiderMob" },
+                    { name: "T2 Rupu Bounty Hunter", cmd: "T2_RupuBountyHunter" },
+                    { name: "T2 Rupu Bounty Hunter Q", cmd: "T2_RupuBountyHunter_Q" },
+                    { name: "T2 Rupu Dunestalker", cmd: "T2_RupuDunestalker" },
+                    { name: "T2 Rupu Dunestalker Q", cmd: "T2_RupuDunestalker_Q" },
+                    { name: "T2 Rupu Forager", cmd: "T2_RupuForager" },
+                    { name: "T2 Rupu Forager Q", cmd: "T2_RupuForager_Q" },
+                    { name: "T2 Rupu Grave Digger", cmd: "T2_RupuGraveDigger" },
+                    { name: "T2 Rupu Grave Digger Q", cmd: "T2_RupuGraveDigger_Q" },
+                    { name: "T2 Rupu Harasser", cmd: "T2_RupuHarasser" },
+                    { name: "T2 Rupu Harasser Q", cmd: "T2_RupuHarasser_Q" },
+                    { name: "T2 Rupu Hazraki", cmd: "T2_RupuHazraki" },
+                    { name: "T2 Rupu Hazraki Q", cmd: "T2_RupuHazraki_Q" },
+                    { name: "T2 RupuHermit", cmd: "T2_RupuHermit" },
+                    { name: "T2 Rupu Hermit Q", cmd: "T2_RupuHermit_Q" },
+                    { name: "T2 Rupu Matriarch", cmd: "T2_RupuMatriarch" },
+                    { name: "T2 Rupu Plainstrider", cmd: "T2_RupuPlainstrider" },
+                    { name: "T2 Rupu Plainstrider", cmd: "T2_RupuPlainstrider_Q" },
+                    { name: "T2 Rupu Priestess", cmd: "T2_RupuPriestess" },
+                    { name: "T2 Rupu Raider", cmd: "T2_RupuRaider" },
+                    { name: "T2 RupuRaider Q", cmd: "T2_RupuRaider_Q" },
+                    { name: "T2 Rupu Shaman", cmd: "T2_RupuShaman" },
+                    { name: "T2 Rupu Shaman Q", cmd: "T2_RupuShaman_Q" },
+                    { name: "T2 Rupu Skirmisher", cmd: "T2_RupuSkirmisher" },
+                    { name: "T2 Rupu Skirmisher_Q", cmd: "T2_RupuSkirmisher_Q" },
+                    { name: "T2 Rupu Zealot", cmd: "T2_RupuZealot" },
+                    { name: "T2 White Death", cmd: "T2_WhiteDeath" },
+                    { name: "T2 White Death Q", cmd: "T2_WhiteDeath_Q" },
+                    { name: "T3 Nurr Raider Mob", cmd: "T3_NurrRaiderMob" },
+                    { name: "T3 Rupu Ashdweller", cmd: "T3_RupuAshdweller" },
+                    { name: "T3 Rupu Ashdweller Q", cmd: "T3_RupuAshdweller_Q" },
+                    { name: "T3 Rupu Drudge", cmd: "T3_RupuDrudge" },
+                    { name: "T3 Rupu Drudge Q", cmd: "T3_RupuDrudge_Q" },
+                    { name: "T3 Rupu Hunter", cmd: "T3_RupuHunter" },
+                    { name: "T3 Rupu Hunter Q", cmd: "T3_RupuHunter_Q" },
+                    { name: "T3 Rupu Oracle Fire Bomb", cmd: "T3_RupuOracleFireBomb" },
+                    { name: "T3 Rupu Oracle Fire Bomb Q", cmd: "T3_RupuOracleFireBomb_Q" },
+                    { name: "T3 Rupu Overseer Fire Bomb", cmd: "T3_RupuOverseerFireBomb" },
+                    { name: "T3 Rupu Overseer Fire Bomb Q", cmd: "T3_RupuOverseerFireBomb_Q" },
+                    { name: "T3 Rupu Plainstrider", cmd: "T3_RupuPlainstrider" },
+                    { name: "T3 Rupu Plainstrider Q", cmd: "T3_RupuPlainstrider_Q" },
+                    { name: "T3 Rupu Rabble", cmd: "T3_RupuRabble" },
+                    { name: "T3 Rupu Rabble Q", cmd: "T3_RupuRabble_Q" },
+                    { name: "T3 Rupu Raider", cmd: "T3_RupuRaider" },
+                    { name: "T3 Rupu Raider Q", cmd: "T3_RupuRaider_Q" },
+                    { name: "T3 Rupu Scuttler", cmd: "T3_RupuScuttler" },
+                    { name: "T3 Rupu Scuttler Q", cmd: "T3_RupuScuttler_Q" },
+                    { name: "T3 Rupu Seeker", cmd: "T3_RupuSeeker" },
+                    { name: "T3 Rupu Seeker Q", cmd: "T3_RupuSeeker_Q" },
+                    { name: "T3 White Death", cmd: "T3_WhiteDeath" },
+                    { name: "T3 White Death Q", cmd: "T3_WhiteDeath_Q" },
+                    { name: "T4 Rupu Firebrand", cmd: "T4_RupuFirebrand" },
+                    { name: "T4 Rupu Firebrand Q", cmd: "T4_RupuFirebrand_Q" },
+                    { name: "T4 Rupu Hazraki", cmd: "T4_RupuHazraki" },
+                    { name: "T4 Rupu Hazraki Q", cmd: "T4_RupuHazraki_Q" },
+                    { name: "T4 Rupu Hunter", cmd: "T4_RupuHunter" },
+                    { name: "T4 Rupu Hunter Q", cmd: "T4_RupuHunter_Q" },
+                    { name: "Tar Dweller Rupu", cmd: "TarDwellerRupu" },
+                    { name: "Zharvakko Shaman", cmd: "ZharvakkoShaman" }
+                ],
+
+                lootSites: [
+                    { val: "AC_MatriarchCamp" },
+                    { val: "AC_MatriarchCampUnedited" },
+                    { val: "AC_Pyramid" },
+                    { val: "AC_RelicPOI1" },
+                    { val: "AC_RelicPOI2" },
+                    { val: "AC_RupuCaveCamp" },
+                    { val: "AC_RupuGate" },
+                    { val: "AC_Sarcophagus" },
+                    { val: "AC_StarTowerCommon" },
+                    { val: "AC_StarTowerFire" },
+                    { val: "AC_StarTowerGas" },
+                    { val: "AC_WorkersGrave" },
+                    { val: "AncientCity_RandomLoot_00" },
+                    { val: "AncientCity_RandomLoot_01" },
+                    { val: "BP_AncientLootsite_01" },
+                    { val: "BP_BrokenTuskerPOI" },
+                    { val: "BP_DesertClam" },
+                    { val: "BP_Lootsite_Volcanic_01" },
+                    { val: "BP_Lootsite_Volcanic_02" },
+                    { val: "BP_Lootsite_Volcanic_03" },
+                    { val: "BP_Lootsite_Volcanic_04" },
+                    { val: "BP_Pyramid" },
+                    { val: "BP_RupuBlockage" },
+                    { val: "BP_SP_Loot_01" },
+                    { val: "BP_SP_Loot_02" },
+                    { val: "BaseLootSite" },
+                    { val: "BlockWall" },
+                    { val: "BlockWall_2" },
+                    { val: "BlockWall_3_EE" },
+                    { val: "Canyon" },
+                    { val: "CanyonBurnableChest" },
+                    { val: "CanyonDragableChest" },
+                    { val: "CanyonForagersOutpost1" },
+                    { val: "CanyonForagersOutpost2" },
+                    { val: "CanyonForagersOutpost3" },
+                    { val: "CanyonIslandShelter" },
+                    { val: "CanyonMountainTopSmallRupuCamp" },
+                    { val: "CanyonSavannahMediumRupuCamp_01" },
+                    { val: "DesertRoamers" },
+                    { val: "DungeonLootableMeshComponent_03" },
+                    { val: "DungeonLootableMeshComponent_04" },
+                    { val: "DungeonLootableMeshComponent_05" },
+                    { val: "DungeonLootableMeshComponent_07" },
+                    { val: "DungeonLootableMeshComponent_08" },
+                    { val: "DungeonLootableMeshComponent_10" },
+                    { val: "DungeonLootableMeshComponent_6" },
+                    { val: "DungeonLootableMeshComponent_7" },
+                    { val: "DungeonLootableMeshComponent_8" },
+                    { val: "EasyMediumRupuCamp_01" },
+                    { val: "EasyPhemkeNest_01" },
+                    { val: "EasySingleRupuCampFortified_01" },
+                    { val: "EasySmallMountainCamp_01" },
+                    { val: "EasySmallRupuCamp_01" },
+                    { val: "FragmentMachine" },
+                    { val: "FragmentMachineLootsite" },
+                    { val: "HardLargeRupuCampFortified1_03" },
+                    { val: "HardLargeRupuCamp_02" },
+                    { val: "HardMediumRupuCampFortified_01" },
+                    { val: "HardMediumRupuCamp_02" },
+                    { val: "HotspotMountainLootableMeshComponent_01" },
+                    { val: "HotspotMountainLootableMeshComponent_02" },
+                    { val: "HotspotMountainLootableMeshComponent_03" },
+                    { val: "HotspotMountainLootableMeshComponent_04" },
+                    { val: "HotspotMountainLootableMeshComponent_05" },
+                    { val: "HotspotMountainLootableMeshComponent_06" },
+                    { val: "HotspotMountainLootableMeshComponent_07" },
+                    { val: "HotspotMountainLootableMeshComponent_08" },
+                    { val: "HotspotMountainLootableMeshComponent_09" },
+                    { val: "HotspotMountainLootableMeshComponent_10" },
+                    { val: "HotspotMountainLootableMeshComponent_11" },
+                    { val: "KS_EasyRupuCamp_1" },
+                    { val: "KS_EasyRupuCamp_2" },
+                    { val: "KS_EasyRupuCamp_3" },
+                    { val: "KS_LargeRupuCamp" },
+                    { val: "KS_LargeRupuCamp_2" },
+                    { val: "KS_LargeRupuCamp_3" },
+                    { val: "KS_MediumRupuCamp_1" },
+                    { val: "KS_MediumRupuCamp_2" },
+                    { val: "KS_MediumRupuCamp_3" },
+                    { val: "KaliSpires_RandomLoot_Open" },
+                    { val: "KaliSpires_RandomLoot_Rupu" },
+                    { val: "MediumLargeRupuCamp_01" },
+                    { val: "MediumMediumRupuCamp_01" },
+                    { val: "MediumSmallRupuCamp_01" },
+                    { val: "MediumSmallRupuCamp_02" },
+                    { val: "MiniHotSpot02" },
+                    { val: "MiniHotSpot02_Child" },
+                    { val: "MiniHotSpot07" },
+                    { val: "MiniHotSpot09" },
+                    { val: "MiniHotSpot09_Child" },
+                    { val: "MiniHotSpot11" },
+                    { val: "MiniHotSpot12" },
+                    { val: "ModuleMachine" },
+                    { val: "NurrLair_T2" },
+                    { val: "NurrLair_T3" },
+                    { val: "NurrLair_T4" },
+                    { val: "QualityUpgrader" },
+                    { val: "RupuCaveCamp_01" },
+                    { val: "RupuWarTower" },
+                    { val: "SG_AshWastesArtilleryCamp" },
+                    { val: "SG_AshWastesFortress" },
+                    { val: "SG_AshWastesFortress2" },
+                    { val: "SG_AshWastesRimWatchtower" },
+                    { val: "SG_ClaySpotTinyCamp" },
+                    { val: "SG_FlatlandsForagingCamp" },
+                    { val: "SG_FlatlandsRuinsFortress" },
+                    { val: "SG_LakeCamp" },
+                    { val: "SG_LakeCamp1" },
+                    { val: "SG_LakeCamp2" },
+                    { val: "SG_LakeCamp3" },
+                    { val: "SG_RoadWatchtower" },
+                    { val: "SG_RockyHillsTinyCamp" },
+                    { val: "SG_TinyRupuCamp_1" },
+                    { val: "SG_TinyRupuCamp_2" },
+                    { val: "SG_TinyRupuCamp_3" },
+                    { val: "T1_AncientCamp" },
+                    { val: "T1_HardRupuCamp_01" },
+                    { val: "T1_HardRupuCamp_02" },
+                    { val: "T1_HardRupuCamp_03" },
+                    { val: "T1_HardRupuCamp_04" },
+                    { val: "T1_Lootsite_01" },
+                    { val: "T1_MediumRupuCamp_01" },
+                    { val: "T1_MediumRupuCamp_02" },
+                    { val: "T1_MediumRupuCamp_03" },
+                    { val: "T1_MediumRupuCamp_04" },
+                    { val: "T1_MediumRupuCamp_05" },
+                    { val: "T1_MiniHotSpot01" },
+                    { val: "T1_MiniHotSpot03" },
+                    { val: "T1_MiniHotSpot06" },
+                    { val: "T1_NomadCamp" },
+                    { val: "T1_ParkourHotSpot_01" },
+                    { val: "T1_ParkourHotSpot_02" },
+                    { val: "T1_SingleBallistaRupuCamp_01" },
+                    { val: "T1_SingleRupuCamp_01" },
+                    { val: "T1_SingleRupuCamp_02" },
+                    { val: "T1_SingleRupuCamp_03" },
+                    { val: "T1_SingleRupuCamp_04" },
+                    { val: "T1_SingleRupuCamp_05" },
+                    { val: "T1_SingleScattershotRupuCamp_01" },
+                    { val: "T1_TinyRupuCamp_01" },
+                    { val: "T1_TinyRupuCamp_02" },
+                    { val: "T1_TinyRupuCamp_03" },
+                    { val: "T1_TinyRupuCamp_04" },
+                    { val: "T1_TinyRupuCamp_05" },
+                    { val: "T2_NomadCamp" },
+                    { val: "T2_ParkourHotSpot_01" },
+                    { val: "T2_RaiderOutpost" },
+                    { val: "T3_NomadCamp" },
+                    { val: "T3_ParkourHotSpot_01" },
+                    { val: "T3_RaiderOutpost" },
+                    { val: "T4_NomadCamp" },
+                    { val: "T4_RaiderOutpost" },
+                    { val: "T5_FlotillaHouse_01" },
+                    { val: "T5_FlotillaWall" },
+                    { val: "TestRupuCave" }
+                ],
+
+                // Add the Equipment sets that you set up on your server. These will be for both the GiveItemSet and EquipItemSet
+                // Know more on how to edit this here:  https://pingperfect.com/knowledgebase/927/Last-Oasis--Compound-cheat-commands-and-item-sets.html
+                // EditSetsHere
+                itemSets: [
+                    { name: "Starter Set", cmd: "1" },
+                    { name: "PvP Set", cmd: "2" },
+                    { name: "Builder Set", cmd: "3" }
+                ],
+
+                // The list of the ADMIN COMMANDS
+                adminCommandPresets: [
+                    { name: "Canyon Playtest", cmd: "CanyonPlaytest" },
+                    { name: "Scenario", cmd: "Scenario" },
+                    { name: "Starter", cmd: "Starter" },
+                    { name: "Sirious Set", cmd: "SiriousSet" },
+                    { name: "Kali Playtest", cmd: "KaliPlaytest" }
+                ]
+            };
+
+            let currentCommand = "";
+            let selectedItem = null;
+            let selectedWalker = null;
+            let selectedMob = null;
+            let selectedLootSite = null;
+
+            const commandSelect = document.getElementById('commandSelect');
+            const dynamicInputs = document.getElementById('dynamicInputs');
+            const actionArea = document.getElementById('actionArea');
+            const generateBtn = document.getElementById('generateBtn');
+            const outputArea = document.getElementById('outputArea');
+            const finalCommandInput = document.getElementById('finalCommand');
+            const copyBtn = document.getElementById('copyBtn');
+            const copyMsg = document.getElementById('copyMsg');
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+
+            // Theme
+            if (localStorage.getItem('theme') === 'light') {
+                body
+                    .classList
+                    .add('light-theme');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body
+                    .classList
+                    .toggle('light-theme');
+                localStorage.setItem(
+                    'theme', body.classList.contains('light-theme')
+                    ? 'light'
+                    : 'dark');
+            });
+
+            // Create categorized grid for items
+            function createCategorizedItemsGrid(itemsByCategory) {
+                const container = document.createElement('div');
+
+                // Category selector dropdown
+                const categorySelect = document.createElement('select');
+                categorySelect.id = 'itemCategorySelect';
+                categorySelect.className = 'category-select';
+
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.disabled = true;
+                defaultOpt.selected = true;
+                defaultOpt.innerText = '-- Select Category --';
+                categorySelect.appendChild(defaultOpt);
+
+                // Add all categories
+                Object
+                    .keys(itemsByCategory)
+                    .forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat;
+                        opt.innerText = formatCategoryName(cat);
+                        categorySelect.appendChild(opt)
+                    });
+
+                container.appendChild(categorySelect);
+
+                // Items display area
+                const itemsDisplay = document.createElement('div');
+                itemsDisplay.id = 'itemsDisplayArea';
+                container.appendChild(itemsDisplay);
+
+                // Category change handler
+                categorySelect.addEventListener('change', (e) => {
+                    const selectedCat = e.target.value;
+                    itemsDisplay.innerHTML = '';
+                    selectedItem = null;
+
+                    if (!selectedCat)
+                        return;
+
+                    const items = itemsByCategory[selectedCat];
+                    if (!items)
+                        return;
+
+                    const categoryGroup = document.createElement('div');
+                    categoryGroup.className = 'category-group';
+
+                    const catHeader = document.createElement('div');
+                    catHeader.className = 'category-header';
+                    catHeader.innerText = formatCategoryName(selectedCat);
+                    categoryGroup.appendChild(catHeader);
+
+                    const catItems = document.createElement('div');
+                    catItems.className = 'category-items';
+
+                    items.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'grid-item';
+                        // Check for * prefix and add class (keep the * visible)
+                        if (item.name.startsWith('*')) {
+                            div
+                                .classList
+                                .add('unstable');
+                        }
+                        div.innerHTML = item
+                            .name
+                            .replace(/\n/g, '<br>');
+
+                        div.addEventListener('click', () => {
+                            // Remove selected from all
+                            catItems
+                                .querySelectorAll('.grid-item')
+                                .forEach(el => el.classList.remove('selected'));
+                            div
+                                .classList
+                                .add('selected');
+                            selectedItem = item;
+                        });
+
+                        catItems.appendChild(div);
+                    });
+
+                    categoryGroup.appendChild(catItems);
+                    itemsDisplay.appendChild(categoryGroup);
+                });
+
+                return container;
+            }
+
+            // Simple grid (for walkers, mobs)
+            function createSimpleGrid(dataArray, type) {
+                if (!dataArray || dataArray.length === 0) {
+                    const p = document.createElement('p');
+                    p.style.color = 'red';
+                    p.innerText = 'No data configured for this list yet.';
+                    return p;
+                }
+
+                const grid = document.createElement('div');
+                grid.className = 'item-grid';
+                if (type === 'lootSite') {
+                    grid
+                        .classList
+                        .add('lootsite-grid');
+                }
+
+                dataArray.forEach(item => {
+                    if (item.val) {
+                        item.name = item.val;
+                        item.cmd = item.val;
+                    }
+                    const div = document.createElement('div');
+                    div.className = 'grid-item';
+                    // Check for * prefix and add class (keep the * visible)
+                    if (item.name && item.name.startsWith('*')) {
+                        div
+                            .classList
+                            .add('unstable');
+                    }
+                    div.innerHTML = (item.name || "").replace(/\n/g, '<br>');
+
+                    div.addEventListener('click', () => {
+                        Array
+                            .from(grid.children)
+                            .forEach(c => c.classList.remove('selected'));
+                        div
+                            .classList
+                            .add('selected');
+                        if (type === 'walker')
+                            selectedWalker = item;
+                        if (type === 'mob')
+                            selectedMob = item;
+                        if (type === 'lootSite')
+                            selectedLootSite = item;
+                        }
+                    );
+                    grid.appendChild(div);
+                });
+                return grid;
+            }
+
+            function formatCategoryName(str) {
+                return str
+                    .replace(/_/g, ' ')
+                    .split(' ')
+                    .map(
+                        word => word
+                        ? word.charAt(0).toUpperCase() + word.slice(1)
+                        : '')
+                    .join(' ');
+            }
+
+            function createToggle(labelText, id, defaultVal = "1") {
+                const lbl = document.createElement('label');
+                lbl.innerText = labelText;
+                const sel = document.createElement('select');
+                sel.id = id;
+                sel.innerHTML = `<option value="1">Enabled (1)</option><option value="0">Disabled (0)</option>`;
+                sel.value = defaultVal;
+                dynamicInputs.appendChild(lbl);
+                dynamicInputs.appendChild(sel);
+            }
+
+            function createNumberInput(labelText, id, defaultVal = "1") {
+                const lbl = document.createElement('label');
+                lbl.innerText = labelText;
+                const inp = document.createElement('input');
+                inp.type = 'number';
+                inp.id = id;
+                inp.value = defaultVal;
+                dynamicInputs.appendChild(lbl);
+                dynamicInputs.appendChild(inp);
+            }
+
+            function createTextInput(labelText, id, placeholder = "") {
+                const lbl = document.createElement('label');
+                lbl.innerText = labelText;
+                const inp = document.createElement('input');
+                inp.type = 'text';
+                inp.id = id;
+                inp.placeholder = placeholder;
+                dynamicInputs.appendChild(lbl);
+                dynamicInputs.appendChild(inp);
+            }
+
+            function renderInputs(cmd) {
+                dynamicInputs.innerHTML = '';
+                dynamicInputs
+                    .classList
+                    .remove('hidden');
+                actionArea
+                    .classList
+                    .remove('hidden');
+                outputArea
+                    .classList
+                    .add('hidden');
+
+                selectedItem = null;
+                selectedWalker = null;
+                selectedMob = null;
+
+                if (cmd === '/GiveItem' || cmd === '/GiveItemQuality') {
+                    dynamicInputs.appendChild(createCategorizedItemsGrid(gameData.items));
+
+                    if (cmd === '/GiveItemQuality') {
+                        const qLbl = document.createElement('label');
+                        qLbl.innerText = "Quality (0=White, 4=Gold):";
+                        const qSel = document.createElement('select');
+                        qSel.id = 'inputQuality';
+                        qSel.innerHTML = `
+                    <option value="0" class="q-0">0 - White</option>
+                    <option value="1" class="q-1">1 - Green</option>
+                    <option value="2" class="q-2">2 - Blue</option>
+                    <option value="3" class="q-3">3 - Magenta</option>
+                    <option value="4" class="q-4">4 - Gold</option>
+                `;
+                        dynamicInputs.appendChild(qLbl);
+                        dynamicInputs.appendChild(qSel);
+                    }
+
+                    createNumberInput("Amount", "inputAmount", "1");
+                } else if (cmd === '/GiveItemSet' || cmd === '/EquipItemSet') {
+                    const lbl = document.createElement('label');
+                    lbl.innerText = "Select Item Set:";
+                    const sel = document.createElement('select');
+                    sel.id = 'inputSet';
+                    gameData
+                        .itemSets
+                        .forEach(set => {
+                            const opt = document.createElement('option');
+                            opt.value = set.cmd;
+                            opt.innerText = `${set.cmd} - ${set.name}`;
+                            sel.appendChild(opt);
+                        });
+                    dynamicInputs.appendChild(lbl);
+                    dynamicInputs.appendChild(sel);
+                } else if (cmd === '/SpawnWalker') {
+                    dynamicInputs.appendChild(createSimpleGrid(gameData.walkers, 'walker'));
+                    createToggle("Assign to me?", "inputAssign", "1");
+                } else if (cmd === '/SpawnWalkerQuality') {
+                    dynamicInputs.appendChild(createSimpleGrid(gameData.walkers, 'walker'));
+
+                    // Add Quality Selector
+                    const qLbl = document.createElement('label');
+                    qLbl.innerText = "Quality (0=White, 4=Gold):";
+                    const qSel = document.createElement('select');
+                    qSel.id = 'inputQuality';
+                    qSel.innerHTML = `
+                <option value="0" class="q-0">0 - White</option>
+                <option value="1" class="q-1">1 - Green</option>
+                <option value="2" class="q-2">2 - Blue</option>
+                <option value="3" class="q-3">3 - Magenta</option>
+                <option value="4" class="q-4">4 - Gold</option>
+            `;
+                    dynamicInputs.appendChild(qLbl);
+                    dynamicInputs.appendChild(qSel);
+
+                    // Add Assign Toggle
+                    createToggle("Assign to me?", "inputAssign", "1");
+                } else if (cmd === '/SpawnMob') {
+                    dynamicInputs.appendChild(createSimpleGrid(gameData.mobs, 'mob'));
+                } else if (cmd === '/SpawnWorm') {
+                    createNumberInput("Distance (Recommend >5000)", "inputDistance", "5000");
+                } else if (cmd === '/Teleport') {
+                    createNumberInput("Distance", "inputDistance", "2000");
+                } else if (cmd === '/TeleportTo3D') {
+                    const row = document.createElement('div');
+                    row.className = 'row-inputs';
+                    ['X', 'Y', 'Z'].forEach(coord => {
+                        const wrap = document.createElement('div');
+                        const lbl = document.createElement('label');
+                        lbl.innerText = coord;
+                        const inp = document.createElement('input');
+                        inp.type = 'number';
+                        inp.className = `inputCoord-${coord}`;
+                        inp.value = '0';
+                        wrap.appendChild(lbl);
+                        wrap.appendChild(inp);
+                        row.appendChild(wrap);
+                    });
+                    dynamicInputs.appendChild(row);
+                } else if (cmd === '/TeleportWalkerTo' || cmd === '/TeleportToPlayer') {
+                    createTextInput("Coordinates / Player Name", "inputTarget", "X Y Z or Name");
+                } else if (cmd === '/TeleportPlayerToMe' || cmd === '/SpectatePlayer') {
+                    createTextInput("Player Name", "inputPlayerName", "Exact Player Name");
+                } else if (cmd === '/SetHealth') {
+                    createNumberInput("Health Amount", "inputHealth", "100");
+                } else if (cmd === '/SetMaxHealth') {
+                    const row = document.createElement('div');
+                    row.className = 'row-inputs';
+
+                    const w1 = document.createElement('div');
+                    const l1 = document.createElement('label');
+                    l1.innerText = "Current Health";
+                    const i1 = document.createElement('input');
+                    i1.type = 'number';
+                    i1.id = 'inputHealth';
+                    i1.value = '100';
+                    w1.appendChild(l1);
+                    w1.appendChild(i1);
+
+                    const w2 = document.createElement('div');
+                    const l2 = document.createElement('label');
+                    l2.innerText = "Max Health";
+                    const i2 = document.createElement('input');
+                    i2.type = 'number';
+                    i2.id = 'inputMaxHealth';
+                    i2.value = '190';
+                    w2.appendChild(l2);
+                    w2.appendChild(i2);
+
+                    row.appendChild(w1);
+                    row.appendChild(w2);
+                    dynamicInputs.appendChild(row);
+                } else if (cmd === '/GiveMoney') {
+                    createNumberInput("Amount (Flots)", "inputAmount", "1000");
+                } else if (cmd === '/GiveExp') {
+                    const row = document.createElement('div');
+                    row.className = 'row-inputs';
+
+                    const w1 = document.createElement('div');
+                    const l1 = document.createElement('label');
+                    l1.innerText = "EXP Amount";
+                    const i1 = document.createElement('input');
+                    i1.type = 'number';
+                    i1.id = 'inputAmount';
+                    i1.value = '1000';
+                    w1.appendChild(l1);
+                    w1.appendChild(i1);
+
+                    const w2 = document.createElement('div');
+                    const l2 = document.createElement('label');
+                    l2.innerText = "Share Clan?";
+                    const i2 = document.createElement('select');
+                    i2.id = 'inputShare';
+                    i2.innerHTML = `<option value="1">Yes (1)</option><option value="0">No (0)</option>`;
+                    w2.appendChild(l2);
+                    w2.appendChild(i2);
+
+                    row.appendChild(w1);
+                    row.appendChild(w2);
+                    dynamicInputs.appendChild(row);
+                } else if (['/FreeBuilding', '/LocalFreeBuilding', '/InstantConstruction', '/AdminOpenEverything', '\noClip'].includes(cmd)) {
+                    createToggle("Enable / Disable", "inputToggle", "1");
+                } else if (cmd === '/UnlockTech') {
+                    createTextInput("Tech Name", "inputTechName", "Engine Tech Name");
+                } else if (cmd === '/ExecuteAdminCommand') {
+                    const lbl = document.createElement('label');
+                    lbl.innerText = "Select Compound Command:";
+                    const sel = document.createElement('select');
+                    sel.id = 'inputAdminCommand';
+
+                    // Populate the dropdown from the new data list
+                    if (gameData.adminCommandPresets) {
+                        gameData
+                            .adminCommandPresets
+                            .forEach(set => {
+                                const opt = document.createElement('option');
+                                opt.value = set.cmd;
+                                opt.innerText = `${set.name}`;
+                                sel.appendChild(opt);
+                            });
+                    }
+
+                    dynamicInputs.appendChild(lbl);
+                    dynamicInputs.appendChild(sel);
+                } else if (cmd === '/SpawnFightClubWeaponRack') {
+                    const row = document.createElement('div');
+                    row.className = 'row-inputs';
+
+                    const w1 = document.createElement('div');
+                    const l1 = document.createElement('label');
+                    l1.innerText = "Item Set Number";
+                    const i1 = document.createElement('input');
+                    i1.type = 'number';
+                    i1.id = 'inputSetNum';
+                    i1.value = '1';
+                    w1.appendChild(l1);
+                    w1.appendChild(i1);
+
+                    const w2 = document.createElement('div');
+                    const l2 = document.createElement('label');
+                    l2.innerText = "Use Once Per Respawn?";
+                    const i2 = document.createElement('select');
+                    i2.id = 'inputUseOnce';
+                    i2.innerHTML = `<option value="1">Yes (1)</option><option value="0">No (0)</option>`;
+                    w2.appendChild(l2);
+                    w2.appendChild(i2);
+
+                    row.appendChild(w1);
+                    row.appendChild(w2);
+                    dynamicInputs.appendChild(row);
+                } else if (cmd === '\nextQuest') {
+                    createNumberInput("Quests to Skip", "inputAmount", "1");
+                } else if (['/TeleportEveryoneToMe', '/DestroyObject', '/StartSpectating', '/StopSpectating', '/UnlockTechTree'].includes(cmd)) {
+                    const p = document.createElement('p');
+                    p.innerText = "No additional options required for this command.";
+                    p.style.color = '#888';
+                    dynamicInputs.appendChild(p);
+                } else if (cmd === '/SpawnMobInDistance') {
+                    dynamicInputs.appendChild(createSimpleGrid(gameData.mobs, 'mob'));
+                    createNumberInput("Distance", "inputDistance", "2000");
+                    // Add Quality Selector
+                    const qLbl = document.createElement('label');
+                    qLbl.innerText = "Quality (0=White, 4=Gold):";
+                    const qSel = document.createElement('select');
+                    qSel.id = 'inputQuality';
+                    qSel.innerHTML = `<option value="0" class="q-0">0 - White</option><option value="1" class="q-1">1 - Green</option><option value="2" class="q-2">2 - Blue</option><option value="3" class="q-3">3 - Magenta</option><option value="4" class="q-4">4 - Gold</option>`;
+                    dynamicInputs.appendChild(qLbl);
+                    dynamicInputs.appendChild(qSel);
+                } else if (cmd === '/SpawnMultipleMobs') {
+                    dynamicInputs.appendChild(createSimpleGrid(gameData.mobs, 'mob'));
+                    createNumberInput("Distance", "inputDistance", "2000");
+                    createNumberInput("Amount", "inputAmount", "1");
+                    // Add Quality Selector
+                    const qLbl = document.createElement('label');
+                    qLbl.innerText = "Quality (0=White, 4=Gold):";
+                    const qSel = document.createElement('select');
+                    qSel.id = 'inputQuality';
+                    qSel.innerHTML = `<option value="0" class="q-0">0 - White</option><option value="1" class="q-1">1 - Green</option><option value="2" class="q-2">2 - Blue</option><option value="3" class="q-3">3 - Magenta</option><option value="4" class="q-4">4 - Gold</option>`;
+                    dynamicInputs.appendChild(qLbl);
+                    dynamicInputs.appendChild(qSel);
+                } else if (cmd === '/SpawnLootsite') {
+                    dynamicInputs.appendChild(createSimpleGrid(gameData.lootSites, 'lootSite'));
+                    createNumberInput("Distance", "inputDistance", "2000");
+                    // Add Quality Selector
+                    const qLbl = document.createElement('label');
+                    qLbl.innerText = "Quality (0=White, 4=Gold):";
+                    const qSel = document.createElement('select');
+                    qSel.id = 'inputQuality';
+                    qSel.innerHTML = `<option value="0" class="q-0">0 - White</option><option value="1" class="q-1">1 - Green</option><option value="2" class="q-2">2 - Blue</option><option value="3" class="q-3">3 - Magenta</option><option value="4" class="q-4">4 - Gold</option>`;
+                    dynamicInputs.appendChild(qLbl);
+                    dynamicInputs.appendChild(qSel);
+                } else if (cmd === '/TeleportTo') {
+                    const row = document.createElement('div');
+                    row.className = 'row-inputs';
+                    ['X', 'Y'].forEach(coord => {
+                        const wrap = document.createElement('div');
+                        const lbl = document.createElement('label');
+                        lbl.innerText = coord;
+                        const inp = document.createElement('input');
+                        inp.type = 'number';
+                        inp.id = `inputCoord${coord}`;
+                        inp.value = '0';
+                        wrap.appendChild(lbl);
+                        wrap.appendChild(inp);
+                        row.appendChild(wrap);
+                    });
+                    dynamicInputs.appendChild(row);
+                } else if (cmd === '/SetWalkerSpeed') {
+                    createNumberInput("Speed Amount", "inputSpeed", "10");
+                }
+            }
+
+            generateBtn.addEventListener('click', () => {
+                let finalString = "";
+
+                try {
+                    if (currentCommand === '/GiveItem') {
+                        if (!selectedItem)
+                            throw "Please select an item";
+                        finalString = `${currentCommand} ${selectedItem
+                            .cmd} ${document
+                            .getElementById('inputAmount')
+                            .value}`;
+                    } else if (currentCommand === '/GiveItemQuality') {
+                        if (!selectedItem)
+                            throw "Please select an item";
+                        finalString = `${currentCommand} ${selectedItem
+                            .cmd} ${document
+                            .getElementById('inputQuality')
+                            .value} ${document
+                            .getElementById('inputAmount')
+                            .value}`;
+                    } else if (currentCommand === '/GiveItemSet' || currentCommand === '/EquipItemSet') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputSet')
+                            .value}`;
+                    } else if (currentCommand === '/SpawnWalker') {
+                        if (!selectedWalker)
+                            throw "Please select a walker";
+                        finalString = `${currentCommand} ${selectedWalker
+                            .cmd} ${document
+                            .getElementById('inputAssign')
+                            .value}`;
+                    } else if (currentCommand === '/SpawnWalkerQuality') {
+                        if (!selectedWalker)
+                            throw "Please select a walker";
+                        finalString = `${currentCommand} ${selectedWalker
+                            .cmd} ${document
+                            .getElementById('inputQuality')
+                            .value} ${document
+                            .getElementById('inputAssign')
+                            .value}`;
+                    } else if (currentCommand === '/SpawnMob') {
+                        if (!selectedMob)
+                            throw "Please select a mob";
+                        finalString = `${currentCommand} ${selectedMob.cmd}`;
+                    } else if (currentCommand === '/SpawnWorm') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputDistance')
+                            .value}`;
+                    } else if (currentCommand === '/Teleport') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputDistance')
+                            .value}`;
+                    } else if (currentCommand === '/TeleportTo3D') {
+                        const x = document
+                            .querySelector('.inputCoord-X')
+                            .value;
+                        const y = document
+                            .querySelector('.inputCoord-Y')
+                            .value;
+                        const z = document
+                            .querySelector('.inputCoord-Z')
+                            .value;
+                        finalString = `${currentCommand} ${x} ${y} ${z}`;
+                    } else if (currentCommand === '/TeleportWalkerTo' || currentCommand === '/TeleportToPlayer') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputTarget')
+                            .value}`;
+                    } else if (currentCommand === '/TeleportPlayerToMe' || currentCommand === '/SpectatePlayer') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputPlayerName')
+                            .value}`;
+                    } else if (currentCommand === '/SetHealth') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputHealth')
+                            .value}`;
+                    } else if (currentCommand === '/SetMaxHealth') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputHealth')
+                            .value} ${document
+                            .getElementById('inputMaxHealth')
+                            .value}`;
+                    } else if (currentCommand === '/GiveMoney') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputAmount')
+                            .value}`;
+                    } else if (currentCommand === '/GiveExp') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputAmount')
+                            .value} ${document
+                            .getElementById('inputShare')
+                            .value}`;
+                    } else if (['/FreeBuilding', '/LocalFreeBuilding', '/InstantConstruction', '/AdminOpenEverything', '\noClip'].includes(currentCommand)) {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputToggle')
+                            .value}`;
+                    } else if (currentCommand === '/UnlockTech') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputTechName')
+                            .value}`;
+                    } else if (currentCommand === '/ExecuteAdminCommand') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputAdminCommand')
+                            .value}`;
+                    } else if (currentCommand === '/SpawnFightClubWeaponRack') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputSetNum')
+                            .value} ${document
+                            .getElementById('inputUseOnce')
+                            .value}`;
+                    } else if (currentCommand === '\nextQuest') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputAmount')
+                            .value}`;
+                    } else if (['/TeleportEveryoneToMe', '/DestroyObject', '/StartSpectating', '/StopSpectating', '/UnlockTechTree'].includes(currentCommand)) {
+                        finalString = currentCommand;
+                    } else if (currentCommand === '/SpawnMobInDistance') {
+                        if (!selectedMob)
+                            throw "Please select a mob";
+                        finalString = `${currentCommand} ${selectedMob
+                            .cmd} ${document
+                            .getElementById('inputDistance')
+                            .value} ${document
+                            .getElementById('inputQuality')
+                            .value}`;
+                    } else if (currentCommand === '/SpawnMultipleMobs') {
+                        if (!selectedMob)
+                            throw "Please select a mob";
+                        finalString = `${currentCommand} ${selectedMob
+                            .cmd} ${document
+                            .getElementById('inputDistance')
+                            .value} ${document
+                            .getElementById('inputAmount')
+                            .value} ${document
+                            .getElementById('inputQuality')
+                            .value}`;
+                    } else if (currentCommand === '/SpawnLootsite') {
+                        if (!selectedLootSite)
+                            throw "Please select a loot site";
+                        finalString = `${currentCommand} ${selectedLootSite
+                            .cmd} ${document
+                            .getElementById('inputDistance')
+                            .value} ${document
+                            .getElementById('inputQuality')
+                            .value}`;
+                    } else if (currentCommand === '/TeleportTo') {
+                        const x = document
+                            .getElementById('inputCoordX')
+                            .value;
+                        const y = document
+                            .getElementById('inputCoordY')
+                            .value;
+                        finalString = `${currentCommand} ${x} ${y}`;
+                    } else if (currentCommand === '/SetWalkerSpeed') {
+                        finalString = `${currentCommand} ${document
+                            .getElementById('inputSpeed')
+                            .value}`;
+                    }
+
+                    finalCommandInput.value = finalString;
+                    outputArea
+                        .classList
+                        .remove('hidden');
+                    copyMsg.innerText = "";
+                    outputArea.scrollIntoView({behavior: 'smooth'});
+
+                } catch (err) {
+                    alert(err);
+                }
+            });
+
+            copyBtn.addEventListener('click', () => {
+                finalCommandInput.select();
+                finalCommandInput.setSelectionRange(0, 99999);
+                navigator
+                    .clipboard
+                    .writeText(finalCommandInput.value)
+                    .then(() => {
+                        copyMsg.innerText = "Copied to clipboard!";
+                        setTimeout(() => copyMsg.innerText = "", 2000);
+                    });
+            });
+
+            // Info Drawer Toggle
+            const infoDrawer = document.getElementById('infoDrawer');
+            const infoDrawerToggle = document.getElementById('infoDrawerToggle');
+
+            infoDrawerToggle.addEventListener('click', () => {
+                infoDrawer
+                    .classList
+                    .toggle('open');
+            });
+
+            // Custom Dropdown Functionality
+            const customSelect = document.getElementById('customCommandSelect');
+            const customSelectSelected = customSelect.querySelector('.custom-select-selected');
+            const customSelectOptions = customSelect.querySelector('.custom-select-options');
+            const customOptions = customSelect.querySelectorAll('.custom-option');
+
+            // Toggle dropdown
+            customSelectSelected.addEventListener('click', () => {
+                customSelect
+                    .classList
+                    .toggle('open');
+            });
+
+            // Select option
+            customOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    customSelectSelected.innerText = option.innerText;
+                    customSelectSelected.dataset.value = option.dataset.value;
+                    customOptions.forEach(o => o.classList.remove('selected'));
+                    option
+                        .classList
+                        .add('selected');
+                    customSelect
+                        .classList
+                        .remove('open');
+
+                    // Trigger your existing command change logic
+                    currentCommand = option.dataset.value;
+                    renderInputs(currentCommand);
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!customSelect.contains(e.target)) {
+                    customSelect
+                        .classList
+                        .remove('open');
+                }
+            });
+
+            // Set current year in footer
+            document
+                .getElementById('currentYear')
+                .textContent = new Date().getFullYear();
+        </script>
+
+        <style>
+            /* Logo Image - Base64 */
+            .header-logo {
+                background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIMAAABnCAMAAAAUlgHAAAAC91BMVEUAAADZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQDZbQAoIh0UEQ4WEw8mIRwaFxMMCggQDgx2c28pJB91cm8dGhUhHRgPDAkfGxYNCwoYFRIKCQccGBMrJyL+8eesqqglIBvTagDacQdJRUAaFA7ZbwOUTANGQj0wLCcMBwJAPDihnptRTUc0MCuloqBWUk4TDgm+vLqnpKJ6dGxlYV5OSUU5NDCOSQO5XgJqZmIHAgCqp6SXlZKDf3s2Mi5VMQ16QAZDPjocGBU9KBP////+7+LCwL6Uko9taGPGhEE+OjSoVgOzsq+bmJVva2ibfF47NzLcfyHDbBTUdBIXEAorGgkeFAltOgebTwOJRgOERAOxWgK9XwH//vi5t7Wem5h+fHlzb2u3hVLMfzEzLijUfietZRvbdQ9eMweiUgLLZgD//fT+8OXIxsV9eXTbizrYfB8uIBAkFwp/QwVRKwVDJAXWbAGQSQH///uqfU9PPi0mHRR1PgZmNgVYLwXEYwG0WwHRaQD/9umwrqvTr4qGhIB4dXFcV1FUUEtORj5uTSnbeRbObw84IAlxPAZJJwTAYgOuWAKMSAL5+PX08+//+e63tLGvopaQjYiMiYbYpXJoYVjdhi9XQy/cgymaXyXLdBw2JxlcORWCSxM+IwjWawD+8+ji4NzQzcfFxMLHonzNnm7TnmeEdWWNeGPWml1hXFa6gknckEPLgzx+VCmIWCe2ax8yIxRlOw+eVQzWcArPaADp6OPZ19PEu7K8qpnGqIm8oIKGgn3HnnWAdmvAk2WyimGgflrQjEnVjke/g0ZgUD98XDp1WDqmbzeUZjZhSzS5dDDahS9GOSyQXCVfQiXBcR9vRBhLMBPv7+y5t7S6sqjTvKTHtaK4pI+4l3eqiGaAblvNk1jXlFFvYVC0fUaRbEVqVDywdDilaCpNNyEyHAbOZwDr7Oi0rKHAqpOglouYkoqikYCPhXeciXSYdlVmU0CHXjNkVUhA33JwAAAADnRSTlMAlfju2CgIgBKnVMJqPr5a9MgAAA7VSURBVGjerJj5VxNXFMebf+DNPpNZkkyakAhJTAhhlX0XKNsBBUEQhIJbFRFREXCru7jhUq37Xq3aqq1ardpFrWtttdZdq1ZttXbff+idTJX2nNZzknDPgQO8vOGT773v3m/ec88ODYLQPOd3aALbrj4h+K3WUcj/J6DiPX0CwQCCIaePja4I5I2g4HVnP6l7F2n8RQi+92G2vgxpAlNyH7u746B/UmhQ8XSTkxkbhAJN5xXJHrqvrx8QGrT6Zla12C8E9gYI0eeitSisoxNpfFfhZkMDwyzcAjIECvFV1MhQ7uoAXyHQkOlZDQ04PhE2BhroDMsKgpRyCPm4r7Eg4TpOEKmwL2CGuje0LJ9OlSONb/p99Gp2AUEQE7qDYdCbLMvLVMrLyKdta78YmJ1EdJMOLxzXshJFtS/2jeHLHwc6owhCv6A76mEPy2pJPdFjs28MJ5NWvIrJFJWCAhYC8ppUU0PiUF2+MYxkWRYTKKopDwU609S8kjiBMz4yzAQGjNLr4XA+e6YVjwpGz37NygR3RBSJQ/iYi0iVQRHCG5r/lKB454c/3/143bv/+wKI1csjEhJJhUGPfCuj48BASrLMp6LixrpBFpXjX8+3BKOVWdUFu41kCLJY/k0B6xo097O6ur6qDApDjxTfGAa9EReFkRjfVFH5YHlB5Kpz64OHKJp35WDumdux6MsC5+sxsn4xWvvxw77/XFagdt0aGLnq9z2NOyJABpLBS/N8Y7B8FRZdRJIZw4adZ50Dk+4/GtR6/9M+ig9QCVbv+DmufQp04ZoVegLvhUb9xJ79/AkF+I7GE2/uWb0y4egsK/th470cEqNg9vjYo9Cj3LQ0MmNKc0yYNtF5Z/3+u4WhdlfHFOT1FY073BEFrqYB6EVWq4VEL0ajfrGmRZ9dp1Kg1bdnzKhlP2h869fZsP3G6bwNGKMTmxHyceDOsVrbOnthybO1M1pf3uSiRbx0YkUsAhHemv59hNvk1JfGohe1TxjeYG1A8fu+9UCBOivKmgQh4r3Th86HaWfkYAfz+unEkilI46MH+6Nn2uByzEyS5gmdG3lRp5sUi5T4bPuyrGmmiESCGA0MbBcDQET3jPZmBKLyG3tynGvT5I0khpEbhk2gdRPHIV+b235rx8ENZjNpLuvcaMYZZuxLSAOlvmO52xQe7ozCCKLUmwuWwKEeBsFIiLFZbUDx9eBg5ZXrz6e5XFjq5KsYQMwvf1xSiTQ+m9F9lzJ4yUymTD5AmuFg9fem4ZYJ0jAtEZ5L4KPz0IszC6PiGWB4IVKrxbAiL4WtI1aBOKnV1mLYpsoMDMN1m+f7MXk0aN4lOydJGxaFYKRZr6dSxqEhO29k5UMacjAvA2C9UMsW2D1My98MGAla9MzFMvKgNd2KyE7CsA0HN2GMgabHHEJ++cA2o8APjc0gzWaJ4o3r5m6PUNOAPWWoi7qeuSI3vtdTBpKMybULQv3DUduzsvLjMMycUjkfEMZO9tNYr2/D2kNSJSgKUsJC57zpVNOghqpDnGlJTfI/GSA4wWiL+9V5/fWBGEiIt6TShoUv+YOgpuPq1WHv8LwEDzYqjcKbhi6GXnA2C5N4Ua0HVmFQIZLDCpMSpxXArxRjWFheOkZF8A9iwLBUczpFyRLpbRSQhi4GQmGYWRtH414GVmVQMDCFYQbgUoxOZzD0r/QbQe3KgzfA8KSodAFTg+NI+FIZFsPZZFmCUBm0yiogwDc1gEAURfrxImhb/kFo1JGNYic2yZQsy4JK0MMRHy9KRk7VQWEAc/L3ueBIAlY9AqxCMLQIUboARIAR5hcEGrLrxANvz1uUmpHe3lQfimFGzNHDFrcqt8TDccDQojDM9M6st4HBKDjI6JzdMR6PAkHpDLRubMUAb289dqfOHwi0q3pg4deD30UQneVlbdD0ONLhyvququrwjVwHp1d0OHW0ppYm9PADWEbZkXNkadXwrQn1NDDgTL+h5d8ir9FZnpB9Phb5wdDKzrDmzjkHnRfik6i4QoxzrLqWOfyVV4Znbp3jkPXUAstKd3ZBsl4fYpkekV3jOLpEWa3KPJIrchi01hAEMXfX8gS3yYCX+8PQt8PIS9Y01x99gKIVEs+VxGzN7D1CicwGwcPzey07srZlHol2DLYca8gPcy0d33vE8yNGPJ/5niRBvRDNygXGF253Ak2LZVv86pPfprYbjTAL5+ztBHueVMM5Ipe80vt5iN7Dv4uON4d+ajllCt96xGq+YPko3+n4ZfxUZfG13sMPR4tGYGhBjdNNbhDBMLoFytvPg7mGlKi0XOM3Z0DrOM4xcvgThmuueA4Y3s6h6u1y6AXLiRzB8epThmthIkfo5QMPloXnm6BTL5wSQI+ad6Wd4u12G+t+3SSYPWmHqxSGEb0ztwke3DApaIHEezwM3RI0NJ2Mn72kSiUcv80sU4wspLHOcJE2jK54OaAetaU8Q+DTw9hEBqdkwTEys2rqa69NHb90VrxMA0OZJAkEbQAGvt7o+ElZnaqsOnCawfXQ3ZWJGYsCvU6at1HgJR3tISg+FCuJ3LpkfNXSbatEAWd0k4KajRxF03T/oAM9XS6ix4rD3tXdHtFgEAkKlgwlE4JUgoAoxvV/xyh5ylKl0KJ63mOcFVkbbS4hObBwQ+Gaxwg27/EUdLK2tpaTS0J3j6y1Sh4G/nm/1Ay7QRyb1yVCQFL02VvUoxztK7JLPMUovVqGiUHp5Yx56PJFOw3edu17YFhItVeLOEPraN1i9FuhZ8EWlaAbKOpW6VOCxh3gKRihvKDOLMiQvcOCLoSKeWjUD+Few+IdV7hO1NElzcBlmt/lXAK/zDlOyWUoqLkJZigvAYUSAmc3XglCj5rR3A+qwxXDog5L2qDTjR2Gin8Ib5jUdbHYDZc5WorfOw/FDpUBgZJVCLMg8WUIKddn4eEF3j8xBp2olEIQany/OpwZ050Md3O4ZOuaywiFtHHgaDgjpoTEp0ufI7TTtKzB6f2DnoZZqdu8CFl2LQcEplt1uD+7yGZLngMf8vsckCR7sl3A1JIwWuvQzWnTnKoIQECPbh6Hij9IMC0Lx3Hw893G0PdcboytKDkm7RL0m4NretZLggqBhVpbLdsbvPVI6YBBHAOG4dT7+QkmE4Pj6q1eNx2MvbYYmbIn13N/PgxG8za1GzkVApxuq+V2vioDo6NLW8ahtdvd1dX5iVCaTAUwdFegy2vM4Bc4suesWZcqYZa1GTnwVRDJwHAnRz0QorgZRLj3vRvyQIOV1C2c3I0M8HlnI0+lp9ttrlyubT9C+23wYVI1jRODxngPK84wgBC8063kAUQQS1MPQTl0J0RQxTs8uPwYLsZ2cZHqq5Q3TxuG/iVVZ+DcACgqovz5NOe1KyclBQKrEGmMqooqJfYyBWE3SSs9P6mcVr5MYH8C4nmgG/QMLIVA4ywf+K7pz1rr5Q10QlQc1AVUdkVrQz2wD2UoJbk7ga9kkwTYDQICsXwXgGEiBHRNIx+f77E5yaJAJ1ROpboLEO0qHUNDYTlgoGf/tLWAdHRi+IKBAyGgoT8XPtXjc1OKgE7IgXesaOCKWwut9ICj2A182aAxM7AbtKBuALH6D+t7AyusCqQmAw0csVhdOwQ4FqHKd0O9xxUYF4KCQDdIBPnISYOG/kK/6NuLipbhbz1SXmK+1tNTUJiYx3e521jPTVQU7AYxCyFgZTUxgW+74xxRUdFYGjkBMUzVCwyIsni+q8Z6MnICcgJgNwDUA+pgN63kO1XUJUrsTCAlc6YX9IApIo4vfLnzijJgGxPsBlGBqImNCXxVR+cWSUfk0ioYEAGRpeckKOcMbDa05sU37M4Au8EkOj4P1LE8nCwiW4HZoaJ+QNwGNuncgVZCuqEgNwgAWzKgkbhnc+xFomgYDIiA2F/uLiwISXd827tAeRPoDhBH7YhbVCXuyTvqFlXNce7AkUKIGwRBbrAGc7ZFNuVWYTqBFUTQwhUtrXyQKQYBkBtiwRybqZhTKWycfHzsLJysrBw0cAUf2NoldQBWzSW3YRgGotCQtmRJHqCLrrvv3brsQXuRnqE2oUYhoqQqkLcKGJsaDsYC/Hl759fLB604fJfTEcYc9/ZHWp+gItjon6/v/D4eRd87TmkgbiGTGUvWpdbIhsbn+PHwc5NEGoAIWUCPmC2TLMvYu31cTpuWar94l1IfpHVV+M5VzLfBoZncBgoKT3ZrBjpUS8x1+etiASWnq1HxK3zstN4Ka7RuJ0JDJzePTMnnEI1q50obzCOjV587nYas4ZhoIUiomTaBMmgfOpoDxzKFRKt1eQZGRXqDomlYZ9NHBJKLz3U0U/Mw88m70LluWkid3hI2XUnWtgzk0g9gGEnQ26JohMuPCmysWRtq6GHHfsnjqUx8GMAD37pfQSn1sSs3q04i3PpaJSnUBlstGHCxGaQhsCn18KyneRugPQwWJdJyAG97YCO6s03v7XZa/nPHA/y0Yy3LDYMwsEg8jOTo/z+3jaYYtvigdHrqRIdknMGwWi0riLoYoOTH2PQdpWc8hTe9YFeeJxIWZDMjY+SbnEQ0iOrLp0RQiu7i3aKRsecVCzNaEMvUnHguKD32r35MYFCa9efGYQgdZ3EIp8/DehliaV3NMRCI0lnT20kphwVZ0VnaXEHpCc/B2BarRModt5byazQIKsxpOC19q6rQ3oOX4en+jJFj9rR3QbloKLZsiirm41w6Dnp5+55b6mEaMpq/2ugQBDWSQc/ZzPp1EtCVhgrcxgVZDGV9LUzYmXhw0vuyW9sypvIDZpHXaAASvdYHG8xzGn0XLK/IdO6QviSeIK+QGtpKS34+H8TokKZDhZTNAHFyjOCJjiwcfQwHFpMZAwSxzNOCFQpZnmdR0JQEacDClbN9RZGHH0z3vqS9L8Q16B9+qwKf6hFB4hGssc2g8QBeL6BhAR6y+WeFxB7hMqhheB8wMIC7fYQ0eiQcokEOlDfv87sLY1o7Bt7OkQyNQaKVwHMo9/O6I4tyAgQQAjpxg+Cf+ot37Dboh9tXwNMA4O3d6TUMkHEo6C//cals6fjFax/veMc/jU+JAajctO1zYwAAAABJRU5ErkJggg==");
+            }
+        </style>
+    </body>
+</html>
