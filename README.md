@@ -2,7 +2,8 @@
 
 A lightweight, browser-based utility designed for **Last Oasis** server administrators. Quickly generate complex admin commands without memorizing syntax, item IDs, or entity names. This tool runs entirely offline in your browser—no installation or server-side requirements needed.
 
-![loact](https://github.com/user-attachments/assets/7711c3de-af40-4f9b-ade2-a5aa5da1dcb8)
+![loact](https://github.com/user-attachments/assets/773c2c8b-3e3f-4650-aa05-acecd1678fc0)
+
 
 ## ✨ Features
 
@@ -13,6 +14,7 @@ A lightweight, browser-based utility designed for **Last Oasis** server administ
 - **🎨 Theme Support:** Toggle between **Dark** and **Light** modes.
 - **📱 Responsive:** Works on desktop and mobile browsers.
 - **🔒 Privacy:** Runs locally in your browser. No data is sent to any server.
+
 
 ## 🚀 Installation
 
