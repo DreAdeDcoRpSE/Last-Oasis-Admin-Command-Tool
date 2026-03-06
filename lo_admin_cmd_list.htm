@@ -1991,10 +1991,27 @@
             function createNumberInput(labelText, id, defaultVal = "1") {
                 const lbl = document.createElement('label');
                 lbl.innerText = labelText;
+
+                // Special handling for "Distance" label
+                if (labelText === "Distance") {
+                    // Add a <br> inside the label
+                    const br = document.createElement('br');
+                    lbl.appendChild(br);
+
+                    // Add warning message inside the lable
+                    const warning = document.createElement('small');
+                    warning.style.fontSize = "10px";
+                    warning.style.letterSpacing = "1px";
+                    warning.innerHTML = "⚠️Warning: Important info in the Notes / Instructions about Distance.⚠️";
+                    lbl.appendChild(warning);
+                }
+
                 const inp = document.createElement('input');
                 inp.type = 'number';
                 inp.id = id;
                 inp.value = defaultVal;
+
+                // Lets append the label
                 dynamicInputs.appendChild(lbl);
                 dynamicInputs.appendChild(inp);
             }
