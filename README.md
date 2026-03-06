@@ -2,12 +2,24 @@
 
 A lightweight, browser-based utility designed for **Last Oasis** server administrators. Quickly generate complex admin commands without memorizing syntax, item IDs, or entity names. This tool runs entirely offline in your browser—no installation or server-side requirements needed.
 
-![loact](https://github.com/user-attachments/assets/773c2c8b-3e3f-4650-aa05-acecd1678fc0)
+**- Older image, but still similar**
 
+![loact - Old Image](https://github.com/user-attachments/assets/773c2c8b-3e3f-4650-aa05-acecd1678fc0)
+
+
+**- Command Listing**
+
+![loact](https://github.com/user-attachments/assets/e41761b2-1a5c-4cf2-a80c-5c2b46757fbe)
+
+
+**- Search Feature**
+
+![loact Search Feature](https://github.com/user-attachments/assets/6a0a2fab-1d91-4b6c-8d42-5e4789edc0a9)
 
 ## ✨ Features
 
 - **📋 Command Generator:** Supports all major admin commands (`/GiveItem`, `/SpawnWalker`, `/Teleport`, `/SpawnLootsite`, etc.).
+- **🔍 Search:** You can search for specific items and walker easily.
 - **🎒 Item Database:** Extensive categorized lists for Weapons, Armor, Resources, Modules, Schematics, and more.
 - **🐾 Entity Grids:** Visual selection grids for Walkers, Mobs, and Loot Sites.
 - **⚙️ Customizable Sets:** Pre-configured Item Sets (e.g., Starter, PvP, Builder) editable via script.
