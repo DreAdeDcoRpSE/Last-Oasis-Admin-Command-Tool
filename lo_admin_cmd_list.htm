@@ -7,30 +7,46 @@
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
             :root {
-                --bg-color: #1a1a1a;
-                --container-bg: #2d2d2d;
+                --bg-color: #111111;
+                --container-bg: #333333;
+                --header-shadow: #252525;
                 --text-color: #e0e0e0;
                 --accent-color: #2c70bd;
                 --hover-accent-color: #0000002e;
                 --accent-text-color: #ffffff;
                 --border-color: #ff9122;
-                --input-bg: #333;
+                --input-bg: #474440;
+                --input-bg-hover: #1f1f1f;
                 --highlight-color: #0000007a;
                 --success-color: #4caf50;
                 --category-header-bg: #3a3a3a;
+                --button-text: #ff9122;
+                --button-text-hover: #ffb222;
+                --button-bg: #343434;
+                --button-bg-hover: #3c3c3c;
+                --button-border-color: #feaa23;
+                --button-border-color-hover: #ffdc95;
             }
 
             body.light-theme {
                 --bg-color: #f0f0f0;
                 --container-bg: #ffffff;
+                --header-shadow: #ff9122;
                 --text-color: #333333;
                 --accent-color: #2c70bd;
                 --accent-text-color: #ffffff;
                 --border-color: #ff833b;
                 --input-bg: #f9f9f9;
+                --input-bg-hover: #bcbcbc;
                 --highlight-color: rgba(172, 80, 0, 0.32);
                 --success-color: #4caf50;
                 --category-header-bg: #e0e0e0;
+                --button-text: #303030;
+                --button-text-hover: #141414;
+                --button-bg: #ededed;
+                --button-bg-hover: #ffb375;
+                --button-border-color: #ff9d00;
+                --button-border-color-hover: #be6c00;
             }
 
             body {
@@ -65,31 +81,40 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                background-image: url('https://raw.githubusercontent.com/DreAdeDcoRpSE/lo-admin-tool-assets/refs/heads/main/test-bg.png');
+                background-size: cover;
+                background-position: bottom;
                 margin-bottom: 20px;
                 border-bottom: 1px solid var(--border-color);
-                padding-bottom: 10px;
+                border-radius:5px;
+                padding: 10px;
             }
 
             .header-left {
                 display: flex;
                 align-items: center;
                 gap: 15px;
-                /* Space between logo and title */
             }
 
             .header-logo {
                 width: 100px;
                 height: 79px;
+                background-image: url("https://raw.githubusercontent.com/DreAdeDcoRpSE/lo-admin-tool-assets/7cc6b7099fc98e3cc11a73572bbbd9b7b09e3033/loact_image.png");
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
                 flex-shrink: 0;
-                /* Prevent logo from shrinking */
             }
 
             h1 {
                 margin: 0;
                 font-size: 1.5rem;
+            }
+
+            .header-h1 {
+                letter-spacing: 2px;
+                font-size:36px;
+                text-shadow: 3px 3px 5px var(--header-shadow) !important;
             }
 
             .theme-switch {
@@ -101,12 +126,15 @@
                 color: var(--text-color);
             }
 
+            .theme-switch:hover {
+                background: var(--input-bg-hover);
+            }
+
             input[type="number"],
             input[type="text"],
             select {
                 width: 100%;
                 padding: 10px;
-                margin-bottom: 15px;
                 background-color: var(--input-bg);
                 border: 1px solid var(--border-color);
                 color: var(--text-color);
@@ -152,13 +180,9 @@
                 overflow-wrap: break-word !important;
                 white-space: normal !important;
                 text-align: center !important;
-
-                /* Vertical centering fix */
                 min-height: 40px !important;
                 line-height: 1.4 !important;
                 padding: 20px 10px !important;
-
-                /* This helps center content vertically in block elements */
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: center !important;
@@ -198,9 +222,7 @@
                 min-height: 40px;
                 display: flex;
                 align-items: center;
-                /* Vertical center */
                 justify-content: center;
-                /* Horizontal center */
             }
 
             .grid-item:hover {
@@ -218,15 +240,19 @@
             .q-0 {
                 color: #ffffff;
             }
+
             .q-1 {
                 color: #57f85d;
             }
+
             .q-2 {
                 color: #2b63fc;
             }
+
             .q-3 {
                 color: #FF00FF;
             }
+
             .q-4 {
                 color: #d4af37;
             }
@@ -234,15 +260,19 @@
             body.light-theme .q-0 {
                 color: #0f0f0f;
             }
+
             body.light-theme .q-1 {
                 color: #16991d;
             }
+
             body.light-theme .q-2 {
                 color: #2b63fc;
             }
+
             body.light-theme .q-3 {
                 color: #FF00FF;
             }
+
             body.light-theme .q-4 {
                 color: #d4af37;
             }
@@ -253,20 +283,24 @@
             }
 
             .btn-action {
-                background-color: var(--accent-color);
-                color: var(--accent-text-color);
-                border: none;
+                background-color: var(--button-bg);
+                color: var(--button-text);
+                border: 2px solid var(--button-border-color);
                 padding: 12px 20px;
+                font-family: "Orbitron", sans-serif;
                 font-size: 1rem;
-                font-weight: bold;
+                letter-spacing: 2px;
+                font-weight: 700;
                 cursor: pointer;
                 width: 100%;
                 border-radius: 4px;
-                margin-top: 10px;
+                margin-top: 20px;
             }
 
             .btn-action:hover {
-                opacity: 0.9;
+                background-color: var(--button-bg-hover);
+                color: var(--button-text-hover);
+                border: 2px solid var(--button-border-color-hover);
             }
 
             .output-area {
@@ -287,18 +321,18 @@
             }
 
             .copy-btn {
-                background: var(--container-bg);
-                border: 1px solid var(--accent-color);
-                color: var(--accent-color);
+                background: var(--input-bg-hover);
+                border: 1px solid var(--border-color);
+                color: var(--text-color);
                 cursor: pointer;
                 padding: 0 20px;
                 border-radius: 4px;
                 white-space: nowrap;
             }
 
-            .copy-btn:active {
-                background: var(--accent-color);
-                color: #000;
+            .copy-btn:hover {
+                background: var(--input-bg);
+                color: var(--border-color);
             }
 
             .hidden {
@@ -333,7 +367,6 @@
                 margin-bottom: 20px;
                 overflow: hidden;
             }
-
             .info-drawer-header {
                 padding: 12px 15px;
                 background-color: var(--category-header-bg);
@@ -344,52 +377,41 @@
                 font-weight: bold;
                 user-select: none;
             }
-
             .info-drawer-header:hover {
                 background-color: var(--input-bg);
             }
-
             .drawer-arrow {
-                transition: transform 0.3s ease;
+            t   ransition: transform 0.3s ease;
             }
-
             .info-drawer.open .drawer-arrow {
                 transform: rotate(180deg);
             }
-
             .info-drawer-content {
-                max-height: 0;
-                transition: max-height 0.3s ease-out;
-                padding: 0 15px;
-                background-color: var(--bg-color);
-            }
-
-            .info-drawer.open .info-drawer-content {
-                max-height: 500px;
+                display: none; /* Hidden by default */
                 padding: 15px;
-                transition: max-height 0.5s ease-in;
+                background-color: var(--bg-color);
+                max-height: 500px;
                 overflow-y: auto;
                 overflow-x: hidden;
                 white-space: normal;
                 overflow-wrap: break-word;
             }
-
+            .info-drawer.open .info-drawer-content {
+                display: block; /* Show when open */
+            }
             .info-drawer-content p {
                 margin: 10px 0;
                 font-size: 0.9rem;
             }
-
             .info-drawer-content ol,
             .info-drawer-content ul {
                 margin: 10px 0;
                 padding-left: 20px;
             }
-
             .info-drawer-content li {
                 margin: 0 5px 10px 20px;
                 font-size: 16px;
             }
-
             .info-drawer-content li:last-child {
                 margin: 0 5px 0 20px;
             }
@@ -511,7 +533,7 @@
                 border: 1px solid #ff8800;
                 font-family: monospace;
                 white-space: pre;
-              }
+            }
 
             a:link, a:active, a:visited {
                 color: #e49400;
@@ -522,6 +544,138 @@
                 color: #8f5a00;
                 text-decoration: none;
             }
+
+            .global-search-wrapper {
+                position: relative;
+                margin-bottom: 20px;
+                width: 100%;
+                z-index: 100;
+            }
+
+            .global-search-text {
+                font-size: 1.2rem !important;
+                font-weight: 600;
+                letter-spacing: 3px;
+            }
+
+            .global-search-input {
+                width: 100% !important;
+                padding: 8px  !important;
+                background-color: var(--input-bg)  !important;
+                border: 1px solid var(--border-color)  !important;
+                color: var(--text-color)  !important;
+                border-radius: 4px  !important;
+                box-sizing: border-box  !important;
+            }
+            .global-search-input:focus {
+                outline: none;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 5px var(--accent-color);
+            }
+
+            .search-results-dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--container-bg);
+                border: 1px solid var(--border-color);
+                border-top: none;
+                max-height: 300px;
+                overflow-y: auto;
+                display: none;
+                border-radius: 0 0 4px 4px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            }
+
+            .search-result-item {
+                padding: 10px 15px;
+                cursor: pointer;
+                border-bottom: 1px solid var(--border-color);
+                color: var(--text-color);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .search-result-item:hover {
+                background-color: var(--highlight-color);
+            }
+
+            .search-result-type {
+                font-size: 0.75rem;
+                opacity: 0.7;
+                text-transform: uppercase;
+                background: var(--accent-color);
+                color: #fff;
+                padding: 2px 6px;
+                border-radius: 3px;
+            }
+
+            .modal-overlay {
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.7);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+            }
+
+            .modal-content {
+                background: var(--container-bg);
+                border: 1px solid var(--border-color);
+                padding: 25px;
+                border-radius: 8px;
+                width: 90%;
+                max-width: 500px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+                text-align: center;
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+                color: var(--text-color);
+            }
+
+            .modal-item-name {
+                font-size: 1.5rem;
+                color: var(--accent-color);
+                margin-bottom: 20px;
+                font-weight: bold;
+            }
+
+            .modal-options {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-btn {
+                padding: 12px;
+                background: var(--input-bg);
+                border: 1px solid var(--accent-color);
+                color: var(--text-color);
+                cursor: pointer;
+                border-radius: 4px;
+                font-size: 1rem;
+                transition: all 0.2s;
+            }
+
+            .modal-btn:hover {
+                background: var(--accent-color);
+                color: #fff;
+            }
+
+            .modal-close {
+                margin-top: 15px;
+                background: transparent;
+                border: none;
+                color: var(--text-color);
+                cursor: pointer;
+                text-decoration: underline;
+            }
         </style>
     </head>
     <body>
@@ -530,10 +684,28 @@
             <header>
                 <div class="header-left gfont">
                     <div class="header-logo"></div>
-                    <h1 style="letter-spacing: 2px; font-size:36px;">LO Admin Command Tool</h1>
+                    <h1 class="header-h1">LO Admin Command Tool</h1>
                 </div>
                 <button class="theme-switch gfont" id="themeToggle">Switch Theme</button>
             </header>
+            <!-- Global Search -->
+            <div class="global-search-wrapper">
+                <span class="gfont global-search-text">🔍SEARCH:</span><br>
+                <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search Items, Mobs, Walkers... (min 2 chars)">
+                <div id="searchResultsDropdown" class="search-results-dropdown"></div>
+            </div>
+
+            <!-- Command Selection Modal (MOVED HERE) -->
+            <div id="commandModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-title">Select Command for:</div>
+                    <div id="modalItemName" class="modal-item-name">Item Name</div>
+                    <div id="modalOptions" class="modal-options">
+                        <!-- Buttons injected via JS -->
+                    </div>
+                    <button class="modal-close" id="modalCloseBtn">Cancel</button>
+                </div>
+            </div>
 
             <div class="info-drawer" id="infoDrawer">
                 <div class="info-drawer-header gfont" id="infoDrawerToggle">
@@ -652,7 +824,7 @@
             <div id="dynamicInputs" class="hidden"></div>
 
             <div id="actionArea" class="hidden">
-                <button class="btn-action" id="generateBtn">Get Command</button>
+                <button class="btn-action" id="generateBtn">GET COMMAND</button>
             </div>
 
             <div class="output-area hidden" id="outputArea">
@@ -1037,6 +1209,7 @@
                         { name: "Rupu Vine", cmd: "RupuVine" },
                         { name: "Salt", cmd: "Salt" },
                         { name: "Sand", cmd: "Sand" },
+                        { name: "Spearmint", cmd: "Spearmint" },
                         { name: "Sulfur", cmd: "Sulfur" },
                         { name: "Tar", cmd: "Tar" },
                         { name: "Thorn Berry", cmd: "ThornBerry" },
@@ -1839,15 +2012,9 @@
 
             function renderInputs(cmd) {
                 dynamicInputs.innerHTML = '';
-                dynamicInputs
-                    .classList
-                    .remove('hidden');
-                actionArea
-                    .classList
-                    .remove('hidden');
-                outputArea
-                    .classList
-                    .add('hidden');
+                dynamicInputs.classList.remove('hidden');
+                actionArea.classList.remove('hidden');
+                outputArea.classList.add('hidden');
 
                 selectedItem = null;
                 selectedWalker = null;
@@ -2343,13 +2510,232 @@
             document
                 .getElementById('currentYear')
                 .textContent = new Date().getFullYear();
-        </script>
 
-        <style>
-            /* Logo Image - Base64 */
-            .header-logo {
-                background-image: url("data:image/png;base64,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");
+            /* --- GLOBAL SEARCH & MODAL LOGIC --- */
+
+            // 1. Build Unified Search Index
+            const searchIndex = [];
+            function buildSearchIndex() {
+                // Items - NOW WITH CATEGORY INFO
+                for (const cat in gameData.items) {
+                    gameData.items[cat].forEach(item => {
+                        searchIndex.push({
+                            name: item.name,
+                            cmd: item.cmd,
+                            type: 'item',
+                            category: cat,  // This is important!
+                            data: item
+                        });
+                    });
+                }
+                // Walkers
+                gameData.walkers.forEach(item => {
+                    searchIndex.push({ name: item.name, cmd: item.cmd, type: 'walker', data: item });
+                });
+                // Mobs
+                gameData.mobs.forEach(item => {
+                    searchIndex.push({ name: item.name, cmd: item.cmd, type: 'mob', data: item });
+                });
+                // Loot Sites
+                gameData.lootSites.forEach(item => {
+                    searchIndex.push({ name: item.val, cmd: item.val, type: 'lootSite', data: item });
+                });
             }
-        </style>
+            buildSearchIndex();
+
+            // 2. Search Input Logic
+            const searchInput = document.getElementById('globalSearchInput');
+            const searchDropdown = document.getElementById('searchResultsDropdown');
+            const commandModal = document.getElementById('commandModal');
+            const modalItemName = document.getElementById('modalItemName');
+            const modalOptions = document.getElementById('modalOptions');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+            let currentSearchSelection = null;
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                searchDropdown.innerHTML = '';
+
+                if (query.length < 2) {
+                    searchDropdown.style.display = 'none';
+                    return;
+                }
+
+                const matches = searchIndex.filter(item =>
+                    item.name.toLowerCase().includes(query)
+                ).sort((a, b) => {
+                    // Prioritize starts-with
+                    const aStart = a.name.toLowerCase().startsWith(query);
+                    const bStart = b.name.toLowerCase().startsWith(query);
+                    if (aStart && !bStart) return -1;
+                    if (!aStart && bStart) return 1;
+                    return a.name.localeCompare(b.name);
+                }).slice(0, 10); // Limit to 10 results
+
+                if (matches.length > 0) {
+                    searchDropdown.style.display = 'block';
+                    matches.forEach(match => {
+                        const div = document.createElement('div');
+                        div.className = 'search-result-item';
+                        div.innerHTML = `
+                            <span>${match.name.replace(/\n/g, ' ')}</span>
+                            <span class="search-result-type">${match.type}</span>
+                        `;
+                        div.addEventListener('click', () => {
+                            openCommandModal(match);
+                            searchInput.value = '';
+                            searchDropdown.style.display = 'none';
+                        });
+                        searchDropdown.appendChild(div);
+                    });
+                } else {
+                    searchDropdown.style.display = 'none';
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.style.display = 'none';
+                }
+            });
+
+            // 3. Modal Logic// 3. Modal Logic
+            function openCommandModal(item) {
+                currentSearchSelection = item;
+
+                // Show category for items
+                let displayName = item.name.replace(/\n/g, ' ');
+                if (item.type === 'item' && item.category) {
+                    displayName += ` <small style="font-size: 0.8rem; color: #888;">(${formatCategoryName(item.category)})</small>`;
+                }
+
+                modalItemName.innerHTML = displayName;
+                modalOptions.innerHTML = '';
+
+                // Define available commands based on type
+                let commands = [];
+                if (item.type === 'item') {
+                    commands = [
+                        { cmd: '/GiveItem', label: 'Give Item (Standard)' },
+                        { cmd: '/GiveItemQuality', label: 'Give Item (With Quality)' }
+                    ];
+                } else if (item.type === 'walker') {
+                    commands = [
+                        { cmd: '/SpawnWalker', label: 'Spawn Walker (Standard)' },
+                        { cmd: '/SpawnWalkerQuality', label: 'Spawn Walker (With Quality)' }
+                    ];
+                } else if (item.type === 'mob') {
+                    commands = [
+                        { cmd: '/SpawnMob', label: 'Spawn Mob (Here)' },
+                        { cmd: '/SpawnMobInDistance', label: 'Spawn Mob (At Distance)' },
+                        { cmd: '/SpawnMultipleMobs', label: 'Spawn Multiple Mobs' }
+                    ];
+                } else if (item.type === 'lootSite') {
+                    commands = [
+                        { cmd: '/SpawnLootsite', label: 'Spawn Loot Site' }
+                    ];
+                }
+
+                commands.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'modal-btn';
+                    btn.innerText = opt.label;
+                    btn.addEventListener('click', () => {
+                        selectCommandFromSearch(opt.cmd, item);
+                    });
+                    modalOptions.appendChild(btn);
+                });
+
+                commandModal.style.display = 'flex';
+            }
+
+            modalCloseBtn.addEventListener('click', () => {
+                commandModal.style.display = 'none';
+                currentSearchSelection = null;
+            });
+
+            // 4. Sync with Main Tool
+            function selectCommandFromSearch(cmd, item) {
+                commandModal.style.display = 'none';
+
+                // Update Custom Dropdown UI
+                const customSelectSelected = document.querySelector('.custom-select-selected');
+                customSelectSelected.innerText = cmd;
+                customSelectSelected.dataset.value = cmd;
+
+                // Remove selected class from other options
+                document.querySelectorAll('.custom-option').forEach(o => {
+                    o.classList.remove('selected');
+                    if(o.dataset.value === cmd) o.classList.add('selected');
+                });
+
+                // Set Global State
+                currentCommand = cmd;
+
+                // Render Inputs (This clears selections internally)
+                renderInputs(cmd);
+
+                // Re-apply Selection after render
+                applyPreSelection(item);
+
+                // Scroll to inputs
+                dynamicInputs.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function applyPreSelection(item) {
+                // Set the global variables based on type
+                if (item.type === 'item') selectedItem = item.data;
+                if (item.type === 'walker') selectedWalker = item.data;
+                if (item.type === 'mob') selectedMob = item.data;
+                if (item.type === 'lootSite') selectedLootSite = item.data;
+
+                // FOR ITEMS: Handle category selection first
+                if (item.type === 'item' && item.category) {
+                    const categoryDropdown = document.getElementById('itemCategorySelect');
+                    if (categoryDropdown) {
+                        // Set the dropdown to the correct category
+                        categoryDropdown.value = item.category;
+
+                        // Trigger the change event to render items for this category
+                        const event = new Event('change');
+                        categoryDropdown.dispatchEvent(event);
+
+                        // Wait a moment for the grid to render, then highlight the item
+                        setTimeout(() => {
+                            highlightItemInGrid(item);
+                        }, 100);
+                        return;
+                    }
+                }
+
+                // For other types (walker, mob, lootSite), just highlight directly
+                highlightItemInGrid(item);
+            }
+
+            function highlightItemInGrid(item) {
+                // 1. Sync Global Varaibles
+                if (item.type === 'item') selectedItem = item.data;
+                if (item.type === 'walker') selectedWalker = item.data;
+                if (item.type === 'mob') selectedMob = item.data;
+                if (item.type === 'lootSite') selectedLootSite = item.data;
+
+                // 2. Find the grid element and highlight it visually
+                const gridItems = dynamicInputs.querySelectorAll('.grid-item');
+                gridItems.forEach(gridItem => {
+                    // Compare innerText with item name
+                    const cleanText = gridItem.innerText.replace(/\n/g, '').trim();
+                    const cleanName = item.name.replace(/\n/g, '').trim();
+                    // Also check cmd for loot sites sometimes.
+                    const cleanCmd = item.cmd ? item.cmd.replace(/\n/g, '').trim() : '';
+
+                    if (cleanText === cleanName || cleanText === cleanCmd) {
+                        gridItem.classList.add('selected');
+                        gridItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
+        </script>
     </body>
 </html>
