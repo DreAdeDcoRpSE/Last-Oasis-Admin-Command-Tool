@@ -4,17 +4,18 @@ A lightweight, browser-based utility designed for **Last Oasis** server administ
 
 **- Older image, but still similar**
 
-![loact - Old Image](https://github.com/user-attachments/assets/773c2c8b-3e3f-4650-aa05-acecd1678fc0)
+<img src="https://github.com/user-attachments/assets/773c2c8b-3e3f-4650-aa05-acecd1678fc0" width="600" />
+
 
 
 **- Command Listing**
 
-![loact](https://github.com/user-attachments/assets/e41761b2-1a5c-4cf2-a80c-5c2b46757fbe)
+<img src="https://github.com/user-attachments/assets/e41761b2-1a5c-4cf2-a80c-5c2b46757fbe" width="600" />
 
 
 **- Search Feature**
 
-![loact Search Feature](https://github.com/user-attachments/assets/6a0a2fab-1d91-4b6c-8d42-5e4789edc0a9)
+<img src="https://github.com/user-attachments/assets/6a0a2fab-1d91-4b6c-8d42-5e4789edc0a9" width="600" />
 
 ## ✨ Features
 
