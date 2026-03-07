@@ -79,8 +79,9 @@ Feel free to fork this repository and submit pull requests if you find bugs or w
 ## 📄 License & Credits
 
 - **Created for:** The Last Oasis Community
-- **Original Source:** headshotdomain.net
-- **License:** Free to use for personal and server administration purposes.
+- **Created by:** coRpSE
+- **Website:** [headshotdomain.net](https://www.headshotdomain.net)
+- **Copyright:** © [headshotdomain.net](https://www.headshotdomain.net)
 
 ---
 
