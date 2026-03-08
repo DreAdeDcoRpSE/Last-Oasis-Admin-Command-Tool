@@ -2,6 +2,9 @@
 
 A lightweight, browser-based utility designed for **Last Oasis** server administrators. Quickly generate complex admin commands without memorizing syntax, item IDs, or entity names. This tool runs entirely offline in your browser—no installation or server-side requirements needed.
 
+**Live Version:**
+[Click Here for Live Version](https://www.headshotdomain.net/lo/lo_admin_cmd_list.htm)
+
 **- Older image, but still similar**
 
 <img src="https://github.com/user-attachments/assets/773c2c8b-3e3f-4650-aa05-acecd1678fc0" width="600" />
