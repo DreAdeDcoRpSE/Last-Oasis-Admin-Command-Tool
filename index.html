@@ -515,10 +515,17 @@
                 font-size: 0.9rem;
                 color: var(--text-color);
                 opacity: 0.8;
+                line-height: 1.6;
             }
 
             .footer p {
                 margin: 5px 0;
+            }
+
+            .footer img {
+                vertical-align: middle;
+                margin: 0 3px;
+                display: inline-block;
             }
 
             .no-copy-box {
@@ -694,6 +701,13 @@
                 <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search Items, Mobs, Walkers... (min 2 chars)">
                 <div id="searchResultsDropdown" class="search-results-dropdown"></div>
             </div>
+            <!-- Sort Toggle -->
+            <div style="margin: 15px 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <button class="theme-switch gfont" id="sortToggle" style="padding: 8px 15px; cursor: pointer; font-size: 0.9rem;">
+                    🔤 Sort: Default
+                </button>
+                <small style="opacity: 0.8;">Toggle alphabetical sorting for item/mob/walker lists</small>
+            </div>
 
             <!-- Command Selection Modal (MOVED HERE) -->
             <div id="commandModal" class="modal-overlay">
@@ -841,7 +855,7 @@
             <p>&copy;
                 <span id="currentYear"></span>
                 <a href="https:..www.headshotdomain.net" target="_blank">headshotdomain.net</a> - Last Oasis Admin Command Tool. All rights reserved.<br>
-               <img src="https://img.shields.io/github/last-commit/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool" alt="Last Commit"> <img src="https://img.shields.io/github/repo-size/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool" alt="File Size"> <img src="https://img.shields.io/github/license/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool" alt="License"> - Created for the Last Oasis community
+               <a href="https://github.com/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool/" target="_blank"><img src="https://img.shields.io/github/last-commit/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool" alt="Last Commit"> <img src="https://img.shields.io/github/repo-size/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool" alt="File Size"> <img src="https://img.shields.io/github/license/DreAdeDcoRpSE/Last-Oasis-Admin-Command-Tool" alt="License"></a> - Created for the Last Oasis community
             </p>
         </footer>
         <script>
@@ -1618,7 +1632,7 @@
                     { name: "T4 Rupu Hunter", cmd: "T4_RupuHunter" },
                     { name: "T4 Rupu Hunter Q", cmd: "T4_RupuHunter_Q" },
                     { name: "Tar Dweller Rupu", cmd: "TarDwellerRupu" },
-                    { name: "Trade Center (Doesn't compelatly work)", cmd: "TradingStation_full" }, 
+                    { name: "Trade Center (Doesn't compelatly work)", cmd: "TradingStation_full" },
                     { name: "Zharvakko Shaman", cmd: "ZharvakkoShaman" }
                 ],
 
@@ -1804,6 +1818,8 @@
             let selectedWalker = null;
             let selectedMob = null;
             let selectedLootSite = null;
+            // Alphabetical Sort State
+            let sortAlphabetically = localStorage.getItem('sortAlphabetically') === 'true';
 
             const commandSelect = document.getElementById('commandSelect');
             const dynamicInputs = document.getElementById('dynamicInputs');
@@ -1833,15 +1849,41 @@
                     : 'dark');
             });
 
+            // Sort Toggle Functionality
+            const sortToggle = document.getElementById('sortToggle');
+            function updateSortToggleButton() {
+                if (sortToggle) {
+                    sortToggle.innerHTML = sortAlphabetically ? '🔤 Sort: A-Z' : '🔢 Sort: Default';
+                }
+            }
+            if (sortToggle) {
+                updateSortToggleButton();
+                sortToggle.addEventListener('click', () => {
+                    sortAlphabetically = !sortAlphabetically;
+                    localStorage.setItem('sortAlphabetically', sortAlphabetically);
+                    updateSortToggleButton();
+                    // Re-render current view if inputs are visible
+                    if (!dynamicInputs.classList.contains('hidden') && currentCommand) {
+                        renderInputs(currentCommand);
+                    }
+                });
+            }
+
+            // Helper: Sort items by name (case-insensitive, ignores leading *)
+            function sortItemsByName(items) {
+                return [...items].sort((a, b) => {
+                    const getName = (item) => (item.name || item.val || '').toLowerCase().replace(/^\*\s*/, '').trim();
+                    return getName(a).localeCompare(getName(b));
+                });
+            }
+
             // Create categorized grid for items
             function createCategorizedItemsGrid(itemsByCategory) {
                 const container = document.createElement('div');
-
                 // Category selector dropdown
                 const categorySelect = document.createElement('select');
                 categorySelect.id = 'itemCategorySelect';
                 categorySelect.className = 'category-select';
-
                 const defaultOpt = document.createElement('option');
                 defaultOpt.value = '';
                 defaultOpt.disabled = true;
@@ -1850,15 +1892,12 @@
                 categorySelect.appendChild(defaultOpt);
 
                 // Add all categories
-                Object
-                    .keys(itemsByCategory)
-                    .forEach(cat => {
-                        const opt = document.createElement('option');
-                        opt.value = cat;
-                        opt.innerText = formatCategoryName(cat);
-                        categorySelect.appendChild(opt)
-                    });
-
+                Object.keys(itemsByCategory).forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.innerText = formatCategoryName(cat);
+                    categorySelect.appendChild(opt)
+                });
                 container.appendChild(categorySelect);
 
                 // Items display area
@@ -1871,17 +1910,19 @@
                     const selectedCat = e.target.value;
                     itemsDisplay.innerHTML = '';
                     selectedItem = null;
+                    if (!selectedCat) return;
 
-                    if (!selectedCat)
-                        return;
+                    // Use 'let' so we can reassign it when sorting
+                    let items = itemsByCategory[selectedCat];
+                    if (!items) return;
 
-                    const items = itemsByCategory[selectedCat];
-                    if (!items)
-                        return;
+                    // Apply alphabetical sorting if enabled
+                    if (sortAlphabetically) {
+                        items = sortItemsByName(items);
+                    }
 
                     const categoryGroup = document.createElement('div');
                     categoryGroup.className = 'category-group';
-
                     const catHeader = document.createElement('div');
                     catHeader.className = 'category-header';
                     catHeader.innerText = formatCategoryName(selectedCat);
@@ -1895,32 +1936,21 @@
                         div.className = 'grid-item';
                         // Check for * prefix and add class (keep the * visible)
                         if (item.name.startsWith('*')) {
-                            div
-                                .classList
-                                .add('unstable');
+                            div.classList.add('unstable');
                         }
-                        div.innerHTML = item
-                            .name
-                            .replace(/\n/g, '<br>');
+                        div.innerHTML = item.name.replace(/\n/g, '<br>');
 
                         div.addEventListener('click', () => {
                             // Remove selected from all
-                            catItems
-                                .querySelectorAll('.grid-item')
-                                .forEach(el => el.classList.remove('selected'));
-                            div
-                                .classList
-                                .add('selected');
+                            catItems.querySelectorAll('.grid-item').forEach(el => el.classList.remove('selected'));
+                            div.classList.add('selected');
                             selectedItem = item;
                         });
-
                         catItems.appendChild(div);
                     });
-
                     categoryGroup.appendChild(catItems);
                     itemsDisplay.appendChild(categoryGroup);
                 });
-
                 return container;
             }
 
@@ -1932,16 +1962,18 @@
                     p.innerText = 'No data configured for this list yet.';
                     return p;
                 }
-
+                // Apply alphabetical sorting if enabled (skip for lootSites if you prefer original order)
+                let items = [...dataArray];
+                if (sortAlphabetically && type !== 'lootSite') {
+                    items = sortItemsByName(items);
+                }
                 const grid = document.createElement('div');
                 grid.className = 'item-grid';
                 if (type === 'lootSite') {
-                    grid
-                        .classList
-                        .add('lootsite-grid');
+                    grid.classList.add('lootsite-grid');
                 }
-
-                dataArray.forEach(item => {
+                // Loop through the sorted items
+                items.forEach(item => {
                     if (item.val) {
                         item.name = item.val;
                         item.cmd = item.val;
@@ -1950,27 +1982,16 @@
                     div.className = 'grid-item';
                     // Check for * prefix and add class (keep the * visible)
                     if (item.name && item.name.startsWith('*')) {
-                        div
-                            .classList
-                            .add('unstable');
+                        div.classList.add('unstable');
                     }
                     div.innerHTML = (item.name || "").replace(/\n/g, '<br>');
-
                     div.addEventListener('click', () => {
-                        Array
-                            .from(grid.children)
-                            .forEach(c => c.classList.remove('selected'));
-                        div
-                            .classList
-                            .add('selected');
-                        if (type === 'walker')
-                            selectedWalker = item;
-                        if (type === 'mob')
-                            selectedMob = item;
-                        if (type === 'lootSite')
-                            selectedLootSite = item;
-                        }
-                    );
+                        Array.from(grid.children).forEach(c => c.classList.remove('selected'));
+                        div.classList.add('selected');
+                        if (type === 'walker') selectedWalker = item;
+                        if (type === 'mob') selectedMob = item;
+                        if (type === 'lootSite') selectedLootSite = item;
+                    });
                     grid.appendChild(div);
                 });
                 return grid;
@@ -2038,17 +2059,36 @@
             }
 
             function renderInputs(cmd) {
+                // 1. Save current category before we wipe the inputs
+                let savedCategory = null;
+                if (cmd === '/GiveItem' || cmd === '/GiveItemQuality') {
+                    const existingSelect = document.getElementById('itemCategorySelect');
+                    if (existingSelect && existingSelect.value) {
+                        savedCategory = existingSelect.value;
+                    }
+                }
+
+                // 2. Clear inputs
                 dynamicInputs.innerHTML = '';
                 dynamicInputs.classList.remove('hidden');
                 actionArea.classList.remove('hidden');
                 outputArea.classList.add('hidden');
-
                 selectedItem = null;
                 selectedWalker = null;
                 selectedMob = null;
 
                 if (cmd === '/GiveItem' || cmd === '/GiveItemQuality') {
                     dynamicInputs.appendChild(createCategorizedItemsGrid(gameData.items));
+
+                    // 3. Restore category if it was saved
+                    if (savedCategory) {
+                        const newSelect = document.getElementById('itemCategorySelect');
+                        if (newSelect) {
+                            newSelect.value = savedCategory;
+                            // This triggers the change event to re-render the items for that category
+                            newSelect.dispatchEvent(new Event('change'));
+                        }
+                    }
 
                     if (cmd === '/GiveItemQuality') {
                         const qLbl = document.createElement('label');
