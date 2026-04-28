@@ -2058,6 +2058,17 @@
                 dynamicInputs.appendChild(inp);
             }
 
+            // Helper function to handle copying and showing the message
+            function copyToClipboard() {
+                const text = finalCommandInput.value;
+                if (!text) return;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    copyMsg.innerText = "Copied to clipboard!";
+                    setTimeout(() => copyMsg.innerText = "", 2000);
+                });
+            }
+
             function renderInputs(cmd) {
                 // 1. Save current category before we wipe the inputs
                 let savedCategory = null;
@@ -2506,6 +2517,7 @@
                         .classList
                         .remove('hidden');
                     copyMsg.innerText = "";
+                    copyToClipboard();
                     outputArea.scrollIntoView({behavior: 'smooth'});
 
                 } catch (err) {
@@ -2514,15 +2526,7 @@
             });
 
             copyBtn.addEventListener('click', () => {
-                finalCommandInput.select();
-                finalCommandInput.setSelectionRange(0, 99999);
-                navigator
-                    .clipboard
-                    .writeText(finalCommandInput.value)
-                    .then(() => {
-                        copyMsg.innerText = "Copied to clipboard!";
-                        setTimeout(() => copyMsg.innerText = "", 2000);
-                    });
+                copyToClipboard();
             });
 
             // Info Drawer Toggle
