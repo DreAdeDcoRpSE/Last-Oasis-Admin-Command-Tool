@@ -794,6 +794,7 @@
                 <div class="custom-select" id="customCommandSelect">
                     <div class="custom-select-selected">-- Choose a Command --</div>
                     <div class="custom-select-options">
+                        <div class="custom-option" data-value="/ToggleInvincibility">/ToggleInvincibility</div>
                         <div class="custom-option" data-value="/GiveItem">/GiveItem [ItemName] [Amount]</div>
                         <div class="custom-option" data-value="/GiveItemQuality">/GiveItemQuality [ItemName] [Quality] [Amount]</div>
                         <div class="custom-option" data-value="/GiveItemSet">/GiveItemSet [Set Number]</div>
@@ -1371,6 +1372,7 @@
                         { name: "Advanced Walker Parts", cmd: "WalkerPartsAdvancedSchematic" },
                         { name: "Base Walker Parts", cmd: "WalkerPartsBaseSchematic" },
                         { name: "Improved Walker Parts", cmd: "WalkerPartsImprovedSchematic" },
+                        { name: "Flotillan Walker Parts", cmd: "WalkerPartsFlotillanSchematic" },
                         { name: "Basic Walker Weapons", cmd: "WalkerWeapons_T1Schematic" },
                         { name: "Improved Walker Weapons", cmd: "WalkerWeapons_T2Schematic" },
                         { name: "Advanced Walker Weapons", cmd: "WalkerWeapons_T3Schematic" },
@@ -2292,7 +2294,7 @@
                     createNumberInput("Quests to Skip", "inputAmount", "1");
                 } else if (cmd === '/StartSpectating') {
                     createToggle("Show All Name Tags?", "inputView", "1");
-                } else if (['/TeleportEveryoneToMe', '/DestroyObject', '/StopSpectating', '/UnlockTechTree'].includes(cmd)) {
+                } else if (['/TeleportEveryoneToMe', '/DestroyObject', '/StopSpectating', '/UnlockTechTree', '/ToggleInvincibility'].includes(cmd)) {
                     const p = document.createElement('p');
                     p.innerText = "No additional options required for this command.";
                     p.style.color = '#888';
@@ -2467,7 +2469,7 @@
                         finalString = `${currentCommand} ${document
                             .getElementById('inputView')
                             .value}`;
-                    } else if (['/TeleportEveryoneToMe', '/DestroyObject', '/StopSpectating', '/UnlockTechTree'].includes(currentCommand)) {
+                    } else if (['/TeleportEveryoneToMe', '/DestroyObject', '/StopSpectating', '/UnlockTechTree', '/ToggleInvincibility'].includes(currentCommand)) {
                         finalString = currentCommand;
                     } else if (currentCommand === '/SpawnMobInDistance') {
                         if (!selectedMob)
