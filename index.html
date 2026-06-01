@@ -1897,7 +1897,7 @@
                 Object.keys(itemsByCategory).forEach(cat => {
                     const opt = document.createElement('option');
                     opt.value = cat;
-                    opt.innerText = formatCategoryName(cat);
+                    opt.innerText = `${formatCategoryName(cat)} (${itemsByCategory[cat].length})`;
                     categorySelect.appendChild(opt)
                 });
                 container.appendChild(categorySelect);
